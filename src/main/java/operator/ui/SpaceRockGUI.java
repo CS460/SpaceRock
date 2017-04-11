@@ -1,6 +1,12 @@
 package operator.ui;
 
 
+import debrisProcessingSubsystem.Scheduler;
+import debrisProcessingSubsystem.cameraComponent.*;
+import debrisProcessingSubsystem.cameraComponent.Camera;
+import debrisProcessingSubsystem.debrisCollection.DebrisCollection;
+import debrisProcessingSubsystem.operatorComponent.OperatorTesting;
+import debrisProcessingSubsystem.schedulerTester.TestingJ;
 import operator.commands.Asteroid;
 import operator.commands.AsteroidData;
 import operator.commands.IncomingListener;
@@ -55,9 +61,9 @@ public class SpaceRockGUI extends Application implements IncomingListener
     private double x0 = 0;
     private double y0 = 0;
     private Slider zoomSlider = new Slider(-5, 5, 0);
-    boolean onOff = false;
-    boolean manualAuto = false;
-    int zoom = 0;
+    private boolean onOff = false;
+    private boolean manualAuto = false;
+    private int zoom = 0;
     private SpaceRockFXMLController fxmlController = new SpaceRockFXMLController();
 
 
@@ -88,6 +94,12 @@ public class SpaceRockGUI extends Application implements IncomingListener
     @Override
     public void start(Stage stage) throws Exception
     {
+        debrisProcessingSubsystem.cameraComponent.Camera camera = new Camera();
+        OperatorTesting operator = new OperatorTesting();
+        DebrisCollection collection = new DebrisCollection();
+
+        Scheduler scheduler = new Scheduler(collection, operator, camera);
+
         SubScene view = createView();
         satellite.start();
         netLink.addIncomingListener(this);

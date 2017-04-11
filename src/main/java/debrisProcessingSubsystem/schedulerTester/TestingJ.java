@@ -11,14 +11,12 @@ import debrisProcessingSubsystem.updateSystem.UpdateType;
 
 /**
  * Created by jdt on 3/27/17.
- *
- * Main entry point for the overall system
  */
 public class TestingJ {
   private static TestableComponent camera, operator, collection;
   private static Scheduler sked;
 
-  private TestingJ()
+  public TestingJ()
   {
     camera = new Camera();
     operator = new OperatorTesting();

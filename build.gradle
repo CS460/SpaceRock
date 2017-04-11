@@ -2,7 +2,8 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
 
-mainClassName = 'debrisProcessingSubsystem.schedulerTester.TestingJ'
+//mainClassName = 'debrisProcessingSubsystem.schedulerTester.TestingJ'
+mainClassName = 'operator.ui.SpaceRockGUI'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
