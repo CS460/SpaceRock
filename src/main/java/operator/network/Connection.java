@@ -110,6 +110,7 @@ public class Connection {
             }
         };
 
+        //test
         Thread t = new Thread(listener);
         t.setDaemon(true);
         t.start();
