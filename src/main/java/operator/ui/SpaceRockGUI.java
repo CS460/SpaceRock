@@ -99,6 +99,8 @@ public class SpaceRockGUI extends Application implements IncomingListener
         DebrisCollection collection = new DebrisCollection();
 
         Scheduler scheduler = new Scheduler(collection, operator, camera);
+        //this starts the constant polling of the scheduler
+
 
         SubScene view = createView();
         satellite.start();
