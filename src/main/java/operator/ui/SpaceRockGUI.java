@@ -64,6 +64,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
     private boolean onOff = false;
     private boolean manualAuto = false;
     private int zoom = 0;
+    private int overlap = 32;
     private SpaceRockFXMLController fxmlController = new SpaceRockFXMLController();
 
 
@@ -264,7 +265,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
         overlapLabel.setStyle("-fx-font-size:9pt");
         TextField overlapTextField = new TextField();
         overlapTextField.setPrefWidth(50);
-        overlapTextField.setText("20");
+        overlapTextField.setText("32");
 
         Label pxLabel = new Label("px");
         Label pxLabel2 = new Label("px");
@@ -335,6 +336,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
                 onOff = ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On") ? true : false;
                 manualAuto = ((RadioButton) modeGroup.getSelectedToggle()).getText().equals("Manual") ? true : false;
                 zoom = (int) zoomSlider.getMajorTickUnit();
+                overlap = Integer.parseInt(overlapTextField.getText());
                 try
                 {
                     netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
@@ -348,7 +350,21 @@ public class SpaceRockGUI extends Application implements IncomingListener
             }
         });
 
-        modeBox.getChildren().addAll(modeSubmitButton);
+        Button modeResetButton = new Button("reset");
+        modeResetButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //TODO Default Sector width and height are final? In SRS they are specified as changing with default
+                //TODO Look at sendCameraSpec method
+                // 100 x 100
+                manualAuto = false;
+                overlap = 32;
+                zoom = 1;
+                onOff = true;
+            }
+        });
+
+        modeBox.getChildren().addAll(modeSubmitButton, modeResetButton);
 
 
         VBox modeVbox = new VBox(5);
