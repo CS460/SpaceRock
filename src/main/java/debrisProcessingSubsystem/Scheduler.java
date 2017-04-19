@@ -57,37 +57,13 @@ public class Scheduler
       //continuous loop
       while (runScheduler)
       {
-        check_Collection();
+//        check_Collection();
         check_Operator();
         check_Camera();
       }
     }
   }
 
-  /**
-   * check_Collection() polls the debrisCollector for update packages and
-   * sends them. It will continue until the debrisCollector has no more updates to
-   * send (allows constant stream of debris data to be sent to the operator to be packaged
-   * for transfer).
-   * If the Update reply is not null the inner loop will handle sending those Updates.
-   *
-   * A separate sendUpdate() method is used to determine where the Update is sent.
-   *
-   * The method returns when responseUpdate and returnedUpdate are both null
-   */
-  private void check_Collection()
-  {
-    while ((returnedUpdate = debrisCollection.pollComponent()) != null)
-    {
-      responseUpdate = sendUpdate(returnedUpdate);
-      if(DEBUG) System.out.println("Scheduler sent update: " + returnedUpdate.getUpdateType());
-      while (responseUpdate != null)
-      {
-        responseUpdate = sendUpdate(responseUpdate);
-        if(DEBUG) System.out.println("Scheduler sent update: " + responseUpdate.getUpdateType());
-      }
-    }
-  }
   /**
    * check_Operator() polls the operator for update packages and
    * sends them. It will continue until the operator has no more updates to
@@ -146,6 +122,30 @@ public class Scheduler
       }
     }
   }
+//  /**
+//   * check_Collection() polls the debrisCollector for update packages and
+//   * sends them. It will continue until the debrisCollector has no more updates to
+//   * send (allows constant stream of debris data to be sent to the operator to be packaged
+//   * for transfer).
+//   * If the Update reply is not null the inner loop will handle sending those Updates.
+//   *
+//   * A separate sendUpdate() method is used to determine where the Update is sent.
+//   *
+//   * The method returns when responseUpdate and returnedUpdate are both null
+//   */
+//  private void check_Collection()
+//  {
+//    while ((returnedUpdate = debrisCollection.pollComponent()) != null)
+//    {
+//      responseUpdate = sendUpdate(returnedUpdate);
+//      if(DEBUG) System.out.println("Scheduler sent update: " + returnedUpdate.getUpdateType());
+//      while (responseUpdate != null)
+//      {
+//        responseUpdate = sendUpdate(responseUpdate);
+//        if(DEBUG) System.out.println("Scheduler sent update: " + responseUpdate.getUpdateType());
+//      }
+//    }
+//  }
 
   /**
    * check_Camera() polls the camera for update packages and
