@@ -62,6 +62,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
   private Slider zoomSlider = new Slider(-5, 5, 0);
   private boolean onOff = false;
   private boolean manualAuto = false;
+  private int overlap = 32;
   private int zoom = 0;
 
 
@@ -350,12 +351,28 @@ public class SpaceRockGUI extends Application implements IncomingListener
       @Override
       public void handle(ActionEvent event)
       {
-        //TODO Default Sector width and height are final? In SRS they are specified as changing with default
-        //TODO Look at sendCameraSpec method
-        // 100 x 100
-        manualAuto = false;
-        zoom = 1;
-        onOff = true;
+          //TODO Default Sector width and height are final? In SRS they are specified as changing with default
+          //TODO Look at sendCameraSpec method
+          // 100 x 100
+
+          manualAuto = true;
+          overlap = 32;
+          zoom = 1;
+          onOff = true;
+
+          onOffGroup.selectToggle(cameraOn);
+          modeGroup.selectToggle(manualMode);
+          overlapTextField.setText("32");
+          camZoomSlider.setMajorTickUnit(1); //Doesn't work yet.
+          try
+          {
+              netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
+          }
+          catch (IOException e1)
+          {
+              e1.printStackTrace();
+          }
+          takePicture.setDisable(false);
       }
     });
 
