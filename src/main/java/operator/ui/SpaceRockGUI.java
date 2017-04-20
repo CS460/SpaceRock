@@ -186,9 +186,6 @@ public class SpaceRockGUI extends Application implements IncomingListener
 
     connectionStatusVbox.getChildren().addAll(labelBox, indicatorBox, terminalBox, buttonBox);
 
-
-
-
     /* camera controls section*/
     VBox camLabelsVbox = new VBox(10);
     VBox box = new VBox(10);
@@ -307,7 +304,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
     {
       try
       {
-        netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
+        netLink.sendCameraSpec(zoom, Integer.parseInt(secTextField.getText()), Integer.parseInt(secTextField.getText()), onOff, manualAuto);
       }
       catch (IOException e1)
       {
@@ -325,14 +322,14 @@ public class SpaceRockGUI extends Application implements IncomingListener
       zoom = (int) zoomSlider.getMajorTickUnit();
       try
       {
-        netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
+        netLink.sendCameraSpec(zoom, Integer.parseInt(secTextField.getText()), Integer.parseInt(secTextField.getText()), onOff, manualAuto);
       }
       catch (IOException e1)
       {
         e1.printStackTrace();
       }
       takePicture.setDisable(!manualAuto);
-      System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() + "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC"));
+      System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() + "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL\n" : "AUTOMATIC\n"));
     });
 
     Button modeResetButton = new Button("reset");
@@ -354,7 +351,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
       secTextField.setText("100");
       try
       {
-        netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
+        netLink.sendCameraSpec(zoom, Integer.parseInt(secTextField.getText()), Integer.parseInt(secTextField.getText()), onOff, manualAuto);
       }
       catch (IOException e1)
       {

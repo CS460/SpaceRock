@@ -174,7 +174,7 @@ public class DummySat extends Thread
    */
   private void logReceived(Object o)
   {
-    System.out.println("\tSatellite received: " + o.toString());
+    System.out.println("Satellite received: " + o.toString());
   }
 
 
