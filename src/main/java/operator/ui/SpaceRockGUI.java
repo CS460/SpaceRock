@@ -9,8 +9,6 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -305,75 +303,63 @@ public class SpaceRockGUI extends Application implements IncomingListener
 
     Button takePicture = new Button("Take Picture");
     takePicture.setDisable(true);
-    takePicture.setOnAction(new EventHandler<ActionEvent>()
+    takePicture.setOnAction(e ->
     {
-      @Override
-      public void handle(ActionEvent e)
+      try
       {
-        try
-        {
-          netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
-        }
-        catch (IOException e1)
-        {
-          e1.printStackTrace();
-        }
+        netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
+      }
+      catch (IOException e1)
+      {
+        e1.printStackTrace();
       }
     });
 
     HBox modeBox = new HBox();
     modeBox.setPadding(new Insets(5, 5, 5, 90));
     Button modeSubmitButton = new Button("submit");
-    modeSubmitButton.setOnAction(new EventHandler<ActionEvent>()
+    modeSubmitButton.setOnAction(e ->
     {
-      @Override
-      public void handle(ActionEvent e)
+      onOff = ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On");
+      manualAuto = ((RadioButton) modeGroup.getSelectedToggle()).getText().equals("Manual");
+      zoom = (int) zoomSlider.getMajorTickUnit();
+      try
       {
-        onOff = ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On") ? true : false;
-        manualAuto = ((RadioButton) modeGroup.getSelectedToggle()).getText().equals("Manual") ? true : false;
-        zoom = (int) zoomSlider.getMajorTickUnit();
-        try
-        {
-          netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
-        }
-        catch (IOException e1)
-        {
-          e1.printStackTrace();
-        }
-        takePicture.setDisable(!manualAuto);
-        System.out.println("On/Off: " + (onOff ? "ON" : "OFF") + " Mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC") + " Zoom Level: " + zoom);
+        netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
       }
+      catch (IOException e1)
+      {
+        e1.printStackTrace();
+      }
+      takePicture.setDisable(!manualAuto);
+      System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() + "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC"));
     });
 
     Button modeResetButton = new Button("reset");
-    modeResetButton.setOnAction(new EventHandler<ActionEvent>()
+    modeResetButton.setOnAction(event ->
     {
-      @Override
-      public void handle(ActionEvent event)
+      //TODO Default Sector width and height are final? In SRS they are specified as changing with default
+      //TODO Look at sendCameraSpec method
+      // 100 x 100
+
+      manualAuto = true;
+      overlap = 32;
+      zoom = 1;
+      onOff = true;
+
+      onOffGroup.selectToggle(cameraOn);
+      modeGroup.selectToggle(manualMode);
+      overlapTextField.setText("32");
+      camZoomSlider.setMajorTickUnit(1); //Doesn't work yet.
+      try
       {
-          //TODO Default Sector width and height are final? In SRS they are specified as changing with default
-          //TODO Look at sendCameraSpec method
-          // 100 x 100
-
-          manualAuto = true;
-          overlap = 32;
-          zoom = 1;
-          onOff = true;
-
-          onOffGroup.selectToggle(cameraOn);
-          modeGroup.selectToggle(manualMode);
-          overlapTextField.setText("32");
-          camZoomSlider.setMajorTickUnit(1); //Doesn't work yet.
-          try
-          {
-              netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
-          }
-          catch (IOException e1)
-          {
-              e1.printStackTrace();
-          }
-          takePicture.setDisable(false);
+        netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
       }
+      catch (IOException e1)
+      {
+        e1.printStackTrace();
+      }
+      takePicture.setDisable(false);
     });
 
     modeBox.getChildren().addAll(modeSubmitButton, modeResetButton);
@@ -456,13 +442,9 @@ public class SpaceRockGUI extends Application implements IncomingListener
     zoomSlider.valueProperty().addListener(
 
       (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-      {
-
         viewCamera.setTranslateZ(viewCamera.getTranslateZ() +
           (newValue.doubleValue() - oldValue.doubleValue()) *
-            CAMERA_ZOOM_COEF);
-
-      });
+            CAMERA_ZOOM_COEF));
     return gridPane;
   }
 
