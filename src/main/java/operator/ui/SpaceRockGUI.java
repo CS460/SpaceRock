@@ -350,7 +350,8 @@ public class SpaceRockGUI extends Application implements IncomingListener
       onOffGroup.selectToggle(cameraOn);
       modeGroup.selectToggle(manualMode);
       overlapTextField.setText("32");
-      camZoomSlider.setMajorTickUnit(1); //Doesn't work yet.
+      camZoomSlider.setValue(0);
+      secTextField.setText("100");
       try
       {
         netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
