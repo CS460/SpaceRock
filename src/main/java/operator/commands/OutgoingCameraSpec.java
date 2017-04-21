@@ -56,10 +56,10 @@ public class OutgoingCameraSpec implements Serializable
   public String toString()
   {
     StringBuilder sb = new StringBuilder();
-    sb.append("\n\t\tZoom level: ").append(this.zoom);
-    sb.append("\n\t\tSector Dimensions: ").append(this.sectorHeight).append(" (h), ").append(this.sectorWidth).append(" (w)");
-    sb.append("\n\t\tPower status: ").append(this.onOff ? "ON" : "OFF");
-    sb.append("\n\t\tCamera mode: ").append(this.manualAuto ? "MANUAL\n" : "AUTOMATIC\n");
+    sb.append("\n\tZoom level: ").append(this.zoom);
+    sb.append("\n\tSector Dimensions: ").append(this.sectorHeight).append(" (h), ").append(this.sectorWidth).append(" (w)");
+    sb.append("\n\tPower status: ").append(this.onOff ? "ON" : "OFF");
+    sb.append("\n\tCamera mode: ").append(this.manualAuto ? "MANUAL\n" : "AUTOMATIC\n");
     return sb.toString();
   }
 }
