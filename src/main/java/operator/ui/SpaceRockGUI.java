@@ -45,8 +45,10 @@ public class SpaceRockGUI extends Application implements IncomingListener
   private static final int CAMERA_ZOOM_COEF = 150;
   private static final int MAIN_PANE_H = 400;
   private static final double MAIN_PANE_W = 600;
-  private static final int DEFAULT_SECTOR_WIDTH = 200;
-  private static final int DEFAULT_SECTOR_HEIGHT = 200;
+  private static final int DEFAULT_SECTOR_WIDTH = 100;
+  private static final int DEFAULT_SECTOR_HEIGHT = 100;
+  private int sectorWidth = 100;
+  private int sectorHeight = 100;
   private final DebrisProcessor processor = new DebrisProcessor();
   private final Connection netLink = new Connection();
   private final DummySat satellite = new DummySat();
@@ -307,7 +309,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
     {
       try
       {
-        netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
+        netLink.sendCameraSpec(zoom, sectorHeight, sectorWidth, onOff, manualAuto);
       }
       catch (IOException e1)
       {
@@ -323,9 +325,12 @@ public class SpaceRockGUI extends Application implements IncomingListener
       onOff = ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On");
       manualAuto = ((RadioButton) modeGroup.getSelectedToggle()).getText().equals("Manual");
       zoom = (int) zoomSlider.getMajorTickUnit();
+
+      sectorHeight = Integer.parseInt(secTextField.getText());
+      sectorWidth = Integer.parseInt(secTextField.getText());
       try
       {
-        netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
+        netLink.sendCameraSpec(zoom, sectorHeight, sectorWidth, onOff, manualAuto);
       }
       catch (IOException e1)
       {
@@ -338,10 +343,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
     Button modeResetButton = new Button("reset");
     modeResetButton.setOnAction(event ->
     {
-      //TODO Default Sector width and height are final? In SRS they are specified as changing with default
       //TODO Look at sendCameraSpec method
-      // 100 x 100
-
       manualAuto = true;
       overlap = 32;
       zoom = 1;
