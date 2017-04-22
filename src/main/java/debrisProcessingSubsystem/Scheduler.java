@@ -23,7 +23,6 @@ import debrisProcessingSubsystem.updateSystem.UpdateType;
  */
 public class Scheduler
 {
-  //test commit
   private boolean DEBUG = true;
   private Updatable debrisCollection;
   private Updatable camera;
