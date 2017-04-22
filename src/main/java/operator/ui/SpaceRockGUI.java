@@ -5,6 +5,9 @@ import debrisProcessingSubsystem.Scheduler;
 import debrisProcessingSubsystem.cameraComponent.Camera;
 import debrisProcessingSubsystem.debrisCollection.DebrisCollection;
 import debrisProcessingSubsystem.operatorComponent.OperatorTesting;
+import debrisProcessingSubsystem.updateSystem.CameraUpdate;
+import debrisProcessingSubsystem.updateSystem.OperatorUpdate;
+import debrisProcessingSubsystem.updateSystem.UpdateType;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
@@ -31,6 +34,7 @@ import operator.commands.IncomingListener;
 import operator.network.Connection;
 import operator.network.DummySat;
 import operator.processing.DebrisProcessor;
+import sensor.ZoomLevel;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -67,6 +71,8 @@ public class SpaceRockGUI extends Application implements IncomingListener
   private debrisProcessingSubsystem.cameraComponent.Camera camera;
   private OperatorTesting operator;
   private DebrisCollection collection;
+  //private OperatorUpdate operatorUpdate;
+  private Scheduler scheduler;
 
 
   private AnimationTimer timer = new AnimationTimer()
@@ -99,7 +105,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
     this.operator = new OperatorTesting();
     this.collection = new DebrisCollection();
 
-    Scheduler scheduler = new Scheduler(collection, operator, camera);
+    this.scheduler = new Scheduler(collection, operator, camera);
     //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
 
     SubScene view = createView();
@@ -327,7 +333,8 @@ public class SpaceRockGUI extends Application implements IncomingListener
     {
       onOff = ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On");
       manualAuto = ((RadioButton) modeGroup.getSelectedToggle()).getText().equals("Manual");
-      zoom = (int) zoomSlider.getMajorTickUnit();
+      zoom = (int) camZoomSlider.getValue();
+      //zoom = (int)zoomSlider.getValue();
 
       sectorHeight = Integer.parseInt(secTextField.getText());
       sectorWidth = Integer.parseInt(secTextField.getText());
@@ -341,6 +348,25 @@ public class SpaceRockGUI extends Application implements IncomingListener
       }
       takePicture.setDisable(!manualAuto);
       System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() + "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC"));
+
+      //generates an empty update to be sent to the camera
+      CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);
+      switch(zoom)
+      {
+        case 0:
+          cameraUpdate.setZoomLevel(ZoomLevel.NONE);
+          break;
+        case 1:
+          cameraUpdate.setZoomLevel(ZoomLevel.x2);
+          break;
+        case 2:
+          cameraUpdate.setZoomLevel(ZoomLevel.x4);
+          break;
+        case 3:
+          cameraUpdate.setZoomLevel(ZoomLevel.x8);
+          break;
+      }
+      scheduler.sendUpdate(cameraUpdate);
     });
 
     Button modeResetButton = new Button("reset");
