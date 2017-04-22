@@ -55,6 +55,7 @@ public class CameraUpdate extends Update
   }
 
   public void setZoomLevel(ZoomLevel zoom_level) {
+    System.out.println("set new zoom");
     param_map.put(CameraUpdateParameters.SET_ZOOM, zoom_level);
     param_map.remove(CameraUpdateParameters.TURN_ON_CAMERA);
     param_map.remove(CameraUpdateParameters.TURN_OFF_CAMERA);
