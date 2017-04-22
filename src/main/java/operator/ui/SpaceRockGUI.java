@@ -64,6 +64,9 @@ public class SpaceRockGUI extends Application implements IncomingListener
   private boolean manualAuto = false;
   private int overlap = 32;
   private int zoom = 0;
+  private debrisProcessingSubsystem.cameraComponent.Camera camera;
+  private OperatorTesting operator;
+  private DebrisCollection collection;
 
 
   private AnimationTimer timer = new AnimationTimer()
@@ -92,9 +95,9 @@ public class SpaceRockGUI extends Application implements IncomingListener
   @Override
   public void start(Stage stage) throws Exception
   {
-    debrisProcessingSubsystem.cameraComponent.Camera camera = new Camera();
-    OperatorTesting operator = new OperatorTesting();
-    DebrisCollection collection = new DebrisCollection();
+    this.camera = new Camera();
+    this.operator = new OperatorTesting();
+    this.collection = new DebrisCollection();
 
     Scheduler scheduler = new Scheduler(collection, operator, camera);
     //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
