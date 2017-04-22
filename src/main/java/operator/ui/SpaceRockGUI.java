@@ -73,6 +73,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
   private DebrisCollection collection;
   //private OperatorUpdate operatorUpdate;
   private Scheduler scheduler;
+  private int previousZoomLevel = 0;
 
 
   private AnimationTimer timer = new AnimationTimer()
@@ -351,20 +352,24 @@ public class SpaceRockGUI extends Application implements IncomingListener
 
       //generates an empty update to be sent to the camera
       CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);
-      switch(zoom)
+      if(zoom != previousZoomLevel)
       {
-        case 0:
-          cameraUpdate.setZoomLevel(ZoomLevel.NONE);
-          break;
-        case 1:
-          cameraUpdate.setZoomLevel(ZoomLevel.x2);
-          break;
-        case 2:
-          cameraUpdate.setZoomLevel(ZoomLevel.x4);
-          break;
-        case 3:
-          cameraUpdate.setZoomLevel(ZoomLevel.x8);
-          break;
+        previousZoomLevel = zoom;
+        switch (zoom)
+        {
+          case 0:
+            cameraUpdate.setZoomLevel(ZoomLevel.NONE);
+            break;
+          case 1:
+            cameraUpdate.setZoomLevel(ZoomLevel.x2);
+            break;
+          case 2:
+            cameraUpdate.setZoomLevel(ZoomLevel.x4);
+            break;
+          case 3:
+            cameraUpdate.setZoomLevel(ZoomLevel.x8);
+            break;
+        }
       }
       scheduler.sendUpdate(cameraUpdate);
     });
