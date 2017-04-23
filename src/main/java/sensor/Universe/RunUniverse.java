@@ -55,6 +55,7 @@ public class RunUniverse implements IncomingListener
 
   public void runUni() throws Exception
   {
+    boolean incr = true;
     this.camera = new Camera();
     this.operator = new OperatorTesting();
     this.collection = new DebrisCollection();
@@ -69,8 +70,13 @@ public class RunUniverse implements IncomingListener
     netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, false, false);//starting the camera off and in automatic mode
     while(true)
     {
-      i++;
-      if(i == 1000000) netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, true, false);
+      if(incr) i++;
+      if(i == 1000000)
+      {
+        netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, true, false);
+        incr  = false;
+        i++;
+      }
       if(lastFrame != null)
       {
       }
