@@ -73,16 +73,16 @@ public class RunUniverse implements IncomingListener
       if(i == 1000000) netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, true, false);
       if(lastFrame != null)
       {
-        for (Asteroid child : lastFrame)
-        {
-          System.out.println(child);
-        }
       }
       if (newData)
       {
         ObservableList<Node> children = rockGroup.getChildren();
         children.clear();
         children.addAll(getAsteroidNodes());
+        for (Asteroid child : lastFrame)
+        {
+          System.out.println(child);
+        }
         newData = false;
       }
     }
