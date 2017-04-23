@@ -348,12 +348,13 @@ public class SpaceRockGUI extends Application implements IncomingListener
         e1.printStackTrace();
       }
       takePicture.setDisable(!manualAuto);
-      System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() + "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC"));
 
-      //generates an empty update to be sent to the camera
-      CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);
+      System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() +
+          "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC"));
+
       if(zoom != previousZoomLevel)
       {
+        CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);
         previousZoomLevel = zoom;
         switch (zoom)
         {
@@ -370,8 +371,8 @@ public class SpaceRockGUI extends Application implements IncomingListener
             cameraUpdate.setZoomLevel(ZoomLevel.x8);
             break;
         }
+        scheduler.sendUpdate(cameraUpdate);
       }
-      scheduler.sendUpdate(cameraUpdate);
     });
 
     Button modeResetButton = new Button("reset");
@@ -397,6 +398,9 @@ public class SpaceRockGUI extends Application implements IncomingListener
         e1.printStackTrace();
       }
       takePicture.setDisable(false);
+      CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);
+      cameraUpdate.setResetCamera();
+      scheduler.sendUpdate(cameraUpdate);
     });
 
     modeBox.getChildren().addAll(modeSubmitButton, modeResetButton);
