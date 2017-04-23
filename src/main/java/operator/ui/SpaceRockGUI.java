@@ -347,7 +347,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
       {
         e1.printStackTrace();
       }
-      takePicture.setDisable(!manualAuto);
+      takePicture.setDisable(!manualAuto || !onOff);
 
       System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() +
           "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC"));
@@ -378,7 +378,6 @@ public class SpaceRockGUI extends Application implements IncomingListener
     Button modeResetButton = new Button("reset");
     modeResetButton.setOnAction(event ->
     {
-      //TODO Look at sendCameraSpec method
       manualAuto = true;
       overlap = 32;
       zoom = 1;
