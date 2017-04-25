@@ -78,6 +78,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
   private Scheduler scheduler;
   private int previousZoomLevel = 0;
   private AnimationTimer autoModeTimer;
+  private SubScene view;
 
 
   private AnimationTimer timer = new AnimationTimer()
@@ -113,7 +114,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
     this.scheduler = new Scheduler(collection, operator, camera);
     //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
 
-    SubScene view = createView();
+    view = createView();
     satellite.start();
     netLink.addIncomingListener(this);
     netLink.connectToDummySat();
@@ -123,7 +124,6 @@ public class SpaceRockGUI extends Application implements IncomingListener
     mainPane.setMaxHeight(600);
     mainPane.setMaxWidth(800);
     mainPane.setPadding(new Insets(0, 10, 10, 10));
-
 
     mainPane.setRight(createRightPane());
     mainPane.setBottom(createButton());
@@ -318,7 +318,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
     onOffGroup.getToggles().addAll(cameraOn, cameraOff);
 
     Button takePicture = new Button("Take Picture");
-    takePicture.setDisable(false);
+    takePicture.setDisable(true);
     takePicture.setOnAction(e ->
     {
       CameraUpdate camUpdate = new CameraUpdate(UpdateType.CAMERA);
@@ -371,7 +371,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
       {
         e1.printStackTrace();
       }
-      takePicture.setDisable(!manualAuto && !onOff);
+      takePicture.setDisable(!manualAuto || !onOff);
 
       System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() +
           "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC"));
@@ -395,6 +395,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
         }
       }
 
+      terminalText.setText("S> On: " + onOff + "\nS> Manual: " + manualAuto);
     });
 
     Button modeResetButton = new Button("reset");
@@ -422,6 +423,8 @@ public class SpaceRockGUI extends Application implements IncomingListener
       CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);
       cameraUpdate.setResetCamera();
       scheduler.sendUpdate(cameraUpdate);
+
+      terminalText.setText("S> On: " + onOff + "\nS> Manual: " + manualAuto);
     });
 
     modeBox.getChildren().addAll(modeSubmitButton, modeResetButton);
