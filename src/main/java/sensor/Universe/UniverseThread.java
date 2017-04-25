@@ -24,7 +24,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RunUniverse implements IncomingListener
+public class UniverseThread implements Runnable, IncomingListener
 {
   private static final int DEFAULT_SECTOR_WIDTH = 100;
   private static final int DEFAULT_SECTOR_HEIGHT = 100;
@@ -39,59 +39,69 @@ public class RunUniverse implements IncomingListener
   private DebrisCollection collection;
   //private OperatorUpdate operatorUpdate;
   private Scheduler scheduler;
-
-
-  public static void main(String[] args)
+  
+  private boolean safeToGet = true; //thread safety measure
+  
+  @Override
+  public void run()
   {
-    RunUniverse runUni = new RunUniverse();
     try
     {
-      runUni.runUni();
-    } catch (Exception e)
+      boolean incr = true;
+      this.camera = new Camera();
+      this.operator = new OperatorTesting();
+      this.collection = new DebrisCollection();
+  
+      this.scheduler = new Scheduler(collection, operator, camera);
+      //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
+  
+      int i = 0;
+      satellite.start();
+      netLink.addIncomingListener(this);
+      netLink.connectToDummySat();
+      netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, false, false);//starting the camera off and in automatic mode
+      while (true)
+      {
+        if (incr) i++;
+        if (i == 1000000)
+        {
+          System.out.println("POP");
+          netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, true, false);
+          incr = false;
+          i++;
+        }
+        if (lastFrame != null)
+        {
+        }
+        if (newData)
+        {
+          safeToGet = false;
+          ObservableList<Node> children = rockGroup.getChildren();
+          children.clear();
+          children.addAll(getAsteroidNodes());
+          for (Asteroid child : lastFrame)
+          {
+            System.out.println("In UniverseThread: " + child);
+          }
+          newData = false;
+          safeToGet = true;
+        }
+      }
+    }
+    catch (Exception e)
     {
-      e.printStackTrace();
+      System.out.println("Exception in UniverseThread.java in run() method");
     }
   }
-
-  public void runUni() throws Exception
+  
+  /* Fetches the Asteroids from the last frame only when available*/
+  public Asteroid[] getAsteroids()
   {
-    boolean incr = true;
-    this.camera = new Camera();
-    this.operator = new OperatorTesting();
-    this.collection = new DebrisCollection();
-
-    this.scheduler = new Scheduler(collection, operator, camera);
-    //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
-
-    int i = 0;
-    satellite.start();
-    netLink.addIncomingListener(this);
-    netLink.connectToDummySat();
-    netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, false, false);//starting the camera off and in automatic mode
-    while(true)
+    while (!safeToGet)
     {
-      if(incr) i++;
-      if(i == 1000000)
-      {
-        netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, true, false);
-        incr  = false;
-        i++;
-      }
-      if(lastFrame != null)
-      {
-      }
-      if (newData)
-      {
-        ObservableList<Node> children = rockGroup.getChildren();
-        children.clear();
-        children.addAll(getAsteroidNodes());
-        for (Asteroid child : lastFrame)
-        {
-          System.out.println(child);
-        }
-        newData = false;
-      }
+      System.out.println("Waiting for lastFrame to be fully modified from another process.");
     }
+    return lastFrame;
   }
 
   /**
