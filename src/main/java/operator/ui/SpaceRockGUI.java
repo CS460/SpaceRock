@@ -46,6 +46,9 @@ import java.util.List;
  */
 public class SpaceRockGUI extends Application implements IncomingListener
 {
+  private static final long NANOSECS_AUTO_MODE_POLLRATE = 10000;
+  private long prevTime = 0;
+
   private static final int CAMERA_ZOOM_COEF = 150;
   private static final int MAIN_PANE_H = 400;
   private static final double MAIN_PANE_W = 600;
@@ -65,15 +68,16 @@ public class SpaceRockGUI extends Application implements IncomingListener
   private double y0 = 0;
   private Slider zoomSlider = new Slider(-5, 5, 0);
   private boolean onOff = false;
-  private boolean manualAuto = false;
+  private boolean manualAuto = true;
+  private boolean prevManualAuto = true;
   private int overlap = 32;
   private int zoom = 0;
   private debrisProcessingSubsystem.cameraComponent.Camera camera;
   private OperatorTesting operator;
   private DebrisCollection collection;
-  //private OperatorUpdate operatorUpdate;
   private Scheduler scheduler;
   private int previousZoomLevel = 0;
+  private AnimationTimer autoModeTimer;
 
 
   private AnimationTimer timer = new AnimationTimer()
@@ -314,9 +318,13 @@ public class SpaceRockGUI extends Application implements IncomingListener
     onOffGroup.getToggles().addAll(cameraOn, cameraOff);
 
     Button takePicture = new Button("Take Picture");
-    takePicture.setDisable(true);
+    takePicture.setDisable(false);
     takePicture.setOnAction(e ->
     {
+      CameraUpdate camUpdate = new CameraUpdate(UpdateType.CAMERA);
+      camUpdate.setTakePicture();
+      scheduler.sendUpdate(camUpdate);
+
       try
       {
         netLink.sendCameraSpec(zoom, sectorHeight, sectorWidth, onOff, manualAuto);
@@ -326,6 +334,22 @@ public class SpaceRockGUI extends Application implements IncomingListener
         e1.printStackTrace();
       }
     });
+
+    autoModeTimer = new AnimationTimer()
+    {
+      @Override
+      public void handle(long now)
+      {
+        if (now - prevTime > NANOSECS_AUTO_MODE_POLLRATE)
+        {
+          CameraUpdate camUpdate = new CameraUpdate(UpdateType.CAMERA);
+          camUpdate.setTakePicture();
+          scheduler.sendUpdate(camUpdate);
+
+          prevTime = now;
+        }
+      }
+    };
 
     HBox modeBox = new HBox();
     modeBox.setPadding(new Insets(5, 5, 5, 90));
@@ -347,32 +371,30 @@ public class SpaceRockGUI extends Application implements IncomingListener
       {
         e1.printStackTrace();
       }
-      takePicture.setDisable(!manualAuto || !onOff);
+      takePicture.setDisable(!manualAuto && !onOff);
 
       System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() +
           "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC"));
 
       if(zoom != previousZoomLevel)
       {
-        CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);
-        previousZoomLevel = zoom;
-        switch (zoom)
-        {
-          case 0:
-            cameraUpdate.setZoomLevel(ZoomLevel.NONE);
-            break;
-          case 1:
-            cameraUpdate.setZoomLevel(ZoomLevel.x2);
-            break;
-          case 2:
-            cameraUpdate.setZoomLevel(ZoomLevel.x4);
-            break;
-          case 3:
-            cameraUpdate.setZoomLevel(ZoomLevel.x8);
-            break;
-        }
-        scheduler.sendUpdate(cameraUpdate);
+        notifySchedulerOfZoom(zoom);
       }
+
+      //now changed to automatic mode from manual mode
+      if(manualAuto != prevManualAuto)
+      {
+        prevManualAuto = manualAuto;
+        if (!manualAuto)
+        {
+          autoModeTimer.start();
+        }
+        else
+        {
+          autoModeTimer.stop();
+        }
+      }
+
     });
 
     Button modeResetButton = new Button("reset");
@@ -499,6 +521,29 @@ public class SpaceRockGUI extends Application implements IncomingListener
     scene.setCamera(viewCamera);
     viewCamera.setTranslateZ(-500);
     return scene;
+  }
+
+  //indicates to the scheduler that it should update the camera with an update (zoom in this case)
+  private void notifySchedulerOfZoom(int newZoom)
+  {
+    CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);
+    previousZoomLevel = newZoom;
+    switch (newZoom)
+    {
+      case 0:
+        cameraUpdate.setZoomLevel(ZoomLevel.NONE);
+        break;
+      case 1:
+        cameraUpdate.setZoomLevel(ZoomLevel.x2);
+        break;
+      case 2:
+        cameraUpdate.setZoomLevel(ZoomLevel.x4);
+        break;
+      case 3:
+        cameraUpdate.setZoomLevel(ZoomLevel.x8);
+        break;
+    }
+    scheduler.sendUpdate(cameraUpdate);
   }
 
 
