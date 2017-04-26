@@ -68,6 +68,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
   private double y0 = 0;
   private Slider zoomSlider = new Slider(-5, 5, 0);
   private boolean onOff = false;
+  private boolean prevOnOff = false;
   private boolean manualAuto = true;
   private boolean prevManualAuto = true;
   private int overlap = 32;
@@ -387,17 +388,21 @@ public class SpaceRockGUI extends Application implements IncomingListener
       System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() +
           "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC"));
 
+      //if the zoom has changed
       if(zoom != previousZoomLevel)
       {
         terminalString += "S> Zoom level: " + previousZoomLevel + " changed to " + zoom + "\n";
         notifySchedulerOfZoom(zoom);
       }
-      //now changed to automatic mode from manual mode
-      if(manualAuto != prevManualAuto)
+      //now changed to automatic mode from manual mode, or we just turned on from previously being off
+      if(manualAuto != prevManualAuto || (onOff && !prevOnOff))
       {
         terminalString += "S> Automatic Mode: " + !prevManualAuto + " changed to " + !manualAuto + "\n";
         prevManualAuto = manualAuto;
-        if (!manualAuto)
+        prevOnOff = onOff;
+
+        //if not manual mode, and the system is on
+        if (!manualAuto && onOff)
         {
           autoModeTimer.start();
         }
@@ -405,6 +410,11 @@ public class SpaceRockGUI extends Application implements IncomingListener
         {
           autoModeTimer.stop();
         }
+      }
+      //disable the auto image polling if the camera is off
+      if(!onOff)
+      {
+        autoModeTimer.stop();
       }
 
       //Building Console output string.
