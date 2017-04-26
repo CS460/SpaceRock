@@ -371,6 +371,8 @@ public class SpaceRockGUI extends Application implements IncomingListener
       {
         e1.printStackTrace();
       }
+      if(!onOff) { viewCamera.setTranslateZ(500); }
+      else { viewCamera.setTranslateZ(-500); }
       takePicture.setDisable(!manualAuto || !onOff);
 
       System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() +
@@ -380,7 +382,6 @@ public class SpaceRockGUI extends Application implements IncomingListener
       {
         notifySchedulerOfZoom(zoom);
       }
-
       //now changed to automatic mode from manual mode
       if(manualAuto != prevManualAuto)
       {
@@ -419,6 +420,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
       {
         e1.printStackTrace();
       }
+      viewCamera.setTranslateZ(-500);
       takePicture.setDisable(false);
       CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);
       cameraUpdate.setResetCamera();
@@ -600,6 +602,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
       controller.setData(a);
       Stage inputStage = new Stage();
       inputStage.setScene(newScene);
+
       inputStage.show();
 
     });
