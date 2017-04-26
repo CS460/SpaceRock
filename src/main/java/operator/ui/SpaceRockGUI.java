@@ -356,12 +356,21 @@ public class SpaceRockGUI extends Application implements IncomingListener
     Button modeSubmitButton = new Button("submit");
     modeSubmitButton.setOnAction(e ->
     {
+      String terminalString = "";
+      if(onOff != ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On"))
+      {
+        terminalString += "S> State On: " + onOff + " changed to " + !onOff + "\n";
+      }
       onOff = ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On");
       manualAuto = ((RadioButton) modeGroup.getSelectedToggle()).getText().equals("Manual");
       zoom = (int) camZoomSlider.getValue();
       //zoom = (int)zoomSlider.getValue();
 
       sectorHeight = Integer.parseInt(secTextField.getText());
+      if(sectorHeight != sectorWidth)
+      {
+        terminalString += "S> Section Size: " + sectorWidth + " changed to " + sectorHeight + "\n";
+      }
       sectorWidth = Integer.parseInt(secTextField.getText());
       try
       {
@@ -380,11 +389,13 @@ public class SpaceRockGUI extends Application implements IncomingListener
 
       if(zoom != previousZoomLevel)
       {
+        terminalString += "S> Zoom level: " + previousZoomLevel + " changed to " + zoom + "\n";
         notifySchedulerOfZoom(zoom);
       }
       //now changed to automatic mode from manual mode
       if(manualAuto != prevManualAuto)
       {
+        terminalString += "S> Automatic Mode: " + !prevManualAuto + " changed to " + !manualAuto + "\n";
         prevManualAuto = manualAuto;
         if (!manualAuto)
         {
@@ -396,7 +407,8 @@ public class SpaceRockGUI extends Application implements IncomingListener
         }
       }
 
-      terminalText.setText("S> On: " + onOff + "\nS> Manual: " + manualAuto);
+      //Building Console output string.
+      terminalText.setText(terminalString);
     });
 
     Button modeResetButton = new Button("reset");
@@ -426,7 +438,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
       cameraUpdate.setResetCamera();
       scheduler.sendUpdate(cameraUpdate);
 
-      terminalText.setText("S> On: " + onOff + "\nS> Manual: " + manualAuto);
+      terminalText.setText("S> System Reset");
     });
 
     modeBox.getChildren().addAll(modeSubmitButton, modeResetButton);
