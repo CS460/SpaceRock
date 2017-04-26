@@ -46,7 +46,7 @@ import java.util.List;
  */
 public class SpaceRockGUI extends Application implements IncomingListener
 {
-  private static final long NANOSECS_AUTO_MODE_POLLRATE = 10000;
+  private static final long NANOSECS_AUTO_MODE_POLLRATE = 1_000_000_000;
   private long prevTime = 0;
 
   private static final int CAMERA_ZOOM_COEF = 150;
@@ -361,6 +361,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
       if(onOff != ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On"))
       {
         terminalString += "S> State On: " + onOff + " changed to " + !onOff + "\n";
+        prevOnOff = onOff;
       }
       onOff = ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On");
       manualAuto = ((RadioButton) modeGroup.getSelectedToggle()).getText().equals("Manual");
@@ -399,7 +400,6 @@ public class SpaceRockGUI extends Application implements IncomingListener
       {
         terminalString += "S> Automatic Mode: " + !prevManualAuto + " changed to " + !manualAuto + "\n";
         prevManualAuto = manualAuto;
-        prevOnOff = onOff;
 
         //if not manual mode, and the system is on
         if (!manualAuto && onOff)
