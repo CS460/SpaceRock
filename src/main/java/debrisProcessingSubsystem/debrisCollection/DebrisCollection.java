@@ -5,6 +5,8 @@ import debrisProcessingSubsystem.updateSystem.DebrisCollectorUpdate;
 import debrisProcessingSubsystem.updateSystem.Updatable;
 import debrisProcessingSubsystem.updateSystem.Update;
 import debrisProcessingSubsystem.updateSystem.*;
+import sensor.*;
+import java.util.*;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ public class DebrisCollection implements Updatable, TestableComponent
 
     private DebrisList newDebris, oldDebris;
     private LinkedList<Update> outgoingUpdates;
+    private List<Asteroid> asteroids = new ArrayList<>();
     private boolean DEBUG = true;
 
     /**
@@ -105,6 +108,33 @@ public class DebrisCollection implements Updatable, TestableComponent
       }
         //if nothing has returned already there is no update.
         return null;
+    }
+
+    private void addAsteroids(Asteroid asteroid)
+    {
+      if(!checkForAsteroidMatch(asteroid))
+      {
+        asteroids.add(asteroid);
+      }
+    }
+
+    private boolean checkForAsteroidMatch(Asteroid asteroid)
+    {
+      int similar = 0;
+      for(Asteroid ast: asteroids)
+      {
+        if(ast.getSize() == asteroid.getSize()) similar++;
+        if(ast.getStartingLocation()[0] == asteroid.getStartingLocation()[0]) similar++;
+        if(ast.getTrajectory()[1]==asteroid.getTrajectory()[1]) similar++;
+        if(similar >= 2)
+        {
+          System.out.println("Asteroid already found!");
+          return true;
+        }
+        similar = 0;
+      }
+      System.out.println("Adding new Asteroid");
+      return false;
     }
 
     /**
@@ -240,8 +270,16 @@ public class DebrisCollection implements Updatable, TestableComponent
      * Testing main for DebrisCollection.
      * @param args ignored.
      */
-    public static void main(String[] args){
-
+    public static void main(String[] args)
+    {
+      Asteroid a0 = new Asteroid(new int[]{0,0},0,new int[]{0,0},0);
+      Asteroid a1 = new Asteroid(new int[]{1,1},1,new int[]{1,1},1);
+      Asteroid a2 = new Asteroid(new int[]{2,2},2,new int[]{2,2},2);
+      DebrisCollection collection = new DebrisCollection();
+      collection.addAsteroids(a0);
+      collection.addAsteroids(a1);
+      collection.addAsteroids(a2);
+      collection.addAsteroids(a0);
     }
 
   @Override
