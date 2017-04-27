@@ -169,11 +169,21 @@ public class SpaceRockGUI extends Application
         Math.tan(Math.toRadians(viewCamera.getFieldOfView() / 2));
       final double factorH = viewLen / (MAIN_PANE_H / 2);
       final double factorW = viewLen / (MAIN_PANE_W / 2);
+      double xTranslation = viewCamera.getTranslateX() + (x0 - e.getX()) * factorW;
+      double yTranslation = viewCamera.getTranslateY() + (y0 - e.getY()) * factorH;
 
-      viewCamera.setTranslateX(viewCamera.getTranslateX() + (x0 - e.getX()) * factorW);
-      viewCamera.setTranslateY(viewCamera.getTranslateY() + (y0 - e.getY()) * factorH);
-      x0 = e.getX();
-      y0 = e.getY();
+      if(xTranslation >= 0 && xTranslation <= 4000)
+      {
+        viewCamera.setTranslateX(xTranslation);
+        x0 = e.getX();
+      }
+      if(yTranslation >= 0 && yTranslation <= 4000)
+      {
+        viewCamera.setTranslateY(yTranslation);
+        y0 = e.getY();
+      }
+
+
     });
     stage.show();
   }
