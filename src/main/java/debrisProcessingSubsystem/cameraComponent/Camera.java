@@ -18,6 +18,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -111,18 +114,30 @@ public class Camera implements Updatable, TestableComponent {
     //from the camera's overall saved image view
     currentFrameAsteroids = universe.getAsteroids();
 
-    BufferedImage image = new BufferedImage(4000, 4000, BufferedImage.TYPE_INT_ARGB);
-    Graphics2D g = image.createGraphics();
+    currentImage = new BufferedImage(4000, 4000, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = currentImage.createGraphics();
     g.setColor(java.awt.Color.black);
-    g.fillRect(0, 0, image.getWidth(), image.getHeight());
+    g.fillRect(0, 0, currentImage.getWidth(), currentImage.getHeight());
 
     for(Asteroid ast : currentFrameAsteroids)
     {
-      g.drawImage(ast.getImage(), ast.current_location[0] - ast.current_radius, ast.current_location[1] - ast.current_radius, ast.current_radius, ast.current_radius, null);
+      if(ast.current_location[0] > 0 && ast.current_location[1] > 0)
+      g.drawImage(ast.getImage(), ast.current_location[0]/* - ast.current_radius*/, ast.current_location[1]/* - ast.current_radius*/, ast.current_radius, ast.current_radius, null);
     }
 
+    for(Asteroid ast : currentFrameAsteroids)
+    {
+      if(ast.current_location[0] > 0 && ast.current_location[1] > 0)
+      ast.setImage(this.getSubregion(ast));
+    }
+
+
     memoryMap.takePicture();
-    currentImage = image;
+  }
+
+  public BufferedImage getSubregion(Asteroid ast)
+  {
+    return currentImage.getSubimage(ast.current_location[0], ast.current_location[1], ast.current_radius, ast.current_radius);
   }
 
   /* Raw frame will be returned with every debris object.
@@ -214,17 +229,17 @@ public class Camera implements Updatable, TestableComponent {
     }
   }
   public BufferedImage getCurrentImage()
-  {/*
-    File outputFile = new File("resources/sensor/asteroids/test.png");
+  {
+
     try
     {
-      ImageIO.write(currentImage, ".png", outputFile);
+      ImageIO.write(currentImage, ".png", new File("D:\\myimage.png"));
       System.out.println("printed to file!");
     }
     catch (IOException e)
     {
       e.printStackTrace();
-    }*/
+    }
     return currentImage;
   }
 

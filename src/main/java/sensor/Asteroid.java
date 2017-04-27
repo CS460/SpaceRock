@@ -27,7 +27,7 @@ public class Asteroid
   private int size;
   private int[] trajectory;
   private int id;
-  private BufferedImage image;
+  private BufferedImage image = null;
   //private HashMap<Integer, Integer[]> hist_location;
   private Image fximage;
   private int created_at;
@@ -135,12 +135,17 @@ public class Asteroid
     try
     {
       this.image = ImageIO.read(Asteroid.class.getResource("asteroids/" + asteroid_image));
-      System.out.println("asteroids/" + asteroid_image);
+      //System.out.println("asteroids/" + asteroid_image);
       this.fximage = SwingFXUtils.toFXImage(this.image,null);
     }
     catch (IOException e)
     {
     }
+  }
+  public void setImage(BufferedImage image)
+  {
+    this.image = image;
+    this.fximage = SwingFXUtils.toFXImage(this.image,null);
   }
 }
 

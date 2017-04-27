@@ -366,6 +366,7 @@ public class SpaceRockGUI extends Application
           CameraUpdate camUpdate = new CameraUpdate(UpdateType.CAMERA);
           camUpdate.setTakePicture();
           scheduler.sendUpdate(camUpdate);
+          //camera.getCurrentImage();
           newData = true;
 
           prevTime = now;

@@ -1,6 +1,8 @@
 package sensor.Universe;
 
 import debrisProcessingSubsystem.debrisCollection.DebrisCollection;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -65,7 +67,7 @@ public class AltUniverseThread extends Thread
           for (Asteroid child : lastFrame)
           {
             child.move(1);
-            System.out.println("In AltUniverseThread: " + child);
+            //System.out.println("In AltUniverseThread: " + child);
           }
           safeToGet = true;
         }
@@ -220,6 +222,7 @@ public class AltUniverseThread extends Thread
         return;
       }
       SpaceRockFXMLController controller = loader.getController();
+
 
       controller.setData(a);
       Stage inputStage = new Stage();
