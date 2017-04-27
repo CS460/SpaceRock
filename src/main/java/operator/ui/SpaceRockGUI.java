@@ -75,6 +75,7 @@ public class SpaceRockGUI extends Application
   private AnimationTimer autoModeTimer;
   private SubScene view;
   private volatile boolean newData = false;
+  private double navButtonSensitivity = 50;
 
   private AnimationTimer timer = new AnimationTimer()
   {
@@ -562,6 +563,41 @@ public class SpaceRockGUI extends Application
     upButton.setStyle("-fx-font-size:8pt");
     downButton.setStyle("-fx-font-size:8pt");
     rightButton.setStyle("-fx-font-size:8pt");
+
+    upButton.setOnAction(event -> {
+      double yTranslation = viewCamera.getTranslateY() - navButtonSensitivity;
+      double sliderVal = zoomSlider.getValue();
+      if(yTranslation >= (128 - 33*sliderVal))
+      {
+        viewCamera.setTranslateY(yTranslation);
+      }
+    });
+    downButton.setOnAction(event -> {
+      double yTranslation = viewCamera.getTranslateY() + navButtonSensitivity;
+      double sliderVal = zoomSlider.getValue();
+      if(yTranslation <= (3473 + 33*sliderVal))
+      {
+        viewCamera.setTranslateY(yTranslation);
+      }
+
+    });
+    leftButton.setOnAction(event -> {
+      double xTranslation = viewCamera.getTranslateX() - navButtonSensitivity;
+      double sliderVal = zoomSlider.getValue();
+      if(xTranslation >= (193 - 54*sliderVal))
+      {
+        viewCamera.setTranslateX(xTranslation);
+      }
+    });
+    rightButton.setOnAction(event -> {
+      double xTranslation = viewCamera.getTranslateX() + navButtonSensitivity;
+      double sliderVal = zoomSlider.getValue();
+      if(xTranslation <= (3203 + 54*sliderVal))
+      {
+        viewCamera.setTranslateX(xTranslation);
+      }
+
+    });
 
     frameButtons.add(upButton, 2, 1);
     frameButtons.add(downButton, 2, 3);

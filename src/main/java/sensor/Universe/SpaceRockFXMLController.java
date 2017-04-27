@@ -51,7 +51,7 @@ public class SpaceRockFXMLController implements Initializable
   public void setData(sensor.Asteroid asteroid)
   {
     this.image = asteroid.getFXImage();
-    this.size = asteroid.current_radius;
+    this.size = asteroid.originalRad;
     this.ID = asteroid.getId();
     //this.timestamp = asteroid.timestamp;
     diameter.setText("" + Math.round(size));
