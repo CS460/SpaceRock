@@ -89,12 +89,12 @@ public class SpaceRockGUI extends Application
         for(int i = 0; i <= 4000; i+= sectorHeight)
         {
           Line line = new Line(i,0,i,4000);
-          line.setStrokeWidth(5);
+          line.setStrokeWidth(1);
           line.setStroke(Color.WHITE);
           line.setFill(Color.WHITE);
 
           Line line2 = new Line(0,i,4000,i);
-          line2.setStrokeWidth(5);
+          line2.setStrokeWidth(1);
           line2.setStroke(Color.WHITE);
           line2.setFill(Color.WHITE);
           rockGroup.getChildren().addAll(line,line2);
