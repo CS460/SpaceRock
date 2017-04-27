@@ -105,8 +105,8 @@ public class Asteroid
   public boolean move(int elapsed_seconds)
   {
     this.current_location = location(elapsed_seconds);
-    return (current_location[0] >= 0 && current_location[1] >= 0);
     //this.current_radius = radius(elapsed_seconds);
+    return (current_location[0] >= 0 && current_location[1] >= 0);
   }
 
   public int[] location(int elapsed_seconds)
