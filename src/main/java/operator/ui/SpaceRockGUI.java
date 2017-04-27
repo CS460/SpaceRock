@@ -27,19 +27,31 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Sphere;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import operator.commands.Asteroid;
+import operator.commands.AsteroidData;
+import operator.commands.IncomingListener;
+import operator.processing.DebrisProcessor;
 import sensor.ZoomLevel;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sahba and Kathrina
  */
-public class SpaceRockGUI extends Application {
+public class SpaceRockGUI extends Application
+{
   private static final boolean TESTING_FRAME_BOUNDARIES = true;
 
   private static final long NANOSECS_AUTO_MODE_POLLRATE = 2_000_000_000;
+  private long prevTime = 0;
+
   private static final int CAMERA_ZOOM_COEF = 150;
   private static final int MAIN_PANE_H = 400;
   private static final double MAIN_PANE_W = 600;
-  private long prevTime = 0;
   private int sectorWidth = 100;
   private int sectorHeight = 100;
   private TextArea terminalText;
@@ -65,29 +77,43 @@ public class SpaceRockGUI extends Application {
   private volatile boolean newData = false;
   private double navButtonSensitivity = 50;
 
-  private AnimationTimer timer = new AnimationTimer() {
+  private AnimationTimer timer = new AnimationTimer()
+  {
     @Override
     public void handle(long now)
     {
-      if (newData) {
+      if (newData)
+      {
         ObservableList<Node> children = rockGroup.getChildren();
         children.clear();
         children.add(viewCamera);
         children.addAll(camera.getAsteroidNodes());
-        for (int i = 0; i <= 4000; i += sectorHeight) {
-          Line line = new Line(i, 0, i, 4000);
+        for(int i = 0; i <= 4000; i+= sectorHeight)
+        {
+          Line line = new Line(i,0,i,4000);
           line.setStrokeWidth(2);
-          line.setStroke(Color.WHITE);
-          line.setFill(Color.WHITE);
-
-          Line line2 = new Line(0, i, 4000, i);
+          Line line2 = new Line(0,i,4000,i);
           line2.setStrokeWidth(2);
-          line2.setStroke(Color.WHITE);
-          line2.setFill(Color.WHITE);
-          rockGroup.getChildren().addAll(line, line2);
+
+          if(i % 1000 == 0)
+          {
+            line.setStroke(Color.GREEN);
+            line.setFill(Color.GREEN);
+            line2.setStroke(Color.GREEN);
+            line2.setFill(Color.GREEN);
+          }
+          else
+          {
+            line.setStroke(Color.WHITE);
+            line.setFill(Color.WHITE);
+            line2.setStroke(Color.WHITE);
+            line2.setFill(Color.WHITE);
+          }
+          rockGroup.getChildren().addAll(line,line2);
         }
 
-        if (TESTING_FRAME_BOUNDARIES) {
+        if(TESTING_FRAME_BOUNDARIES)
+        {
           Sphere s = new Sphere(5);
           s.setMaterial(new PhongMaterial(Color.ALICEBLUE));
           Sphere s1 = new Sphere(5);
@@ -153,7 +179,6 @@ public class SpaceRockGUI extends Application {
     stage.setScene(scene);
     stage.setTitle("Space Rock Control Center");
     stage.setResizable(false);
-
     //set textarea here
 
     view.setOnScroll((ScrollEvent event) ->
@@ -161,9 +186,8 @@ public class SpaceRockGUI extends Application {
       double cameraX = viewCamera.getTranslateX();
       double cameraY = viewCamera.getTranslateY();
       double newValue = zoomSlider.getValue() + event.getDeltaY() / 100;
-      if ((cameraX >= (193 - 54 * newValue) && cameraX <= (3203 + 54 * newValue))
-        && (cameraY >= (128 - 33 * newValue) && cameraY <= (3473 + 33 * newValue)))
-      {
+      if((cameraX >= (193 - 54*newValue) && cameraX <= (3203 + 54*newValue))
+              && (cameraY >= (128 - 33*newValue) && cameraY <= (3473 + 33*newValue))) {
         zoomSlider.adjustValue(newValue);
       }
     });
@@ -187,11 +211,13 @@ public class SpaceRockGUI extends Application {
       double yTranslation = viewCamera.getTranslateY() + (y0 - e.getY()) * factorH;
       double sliderVal = zoomSlider.getValue();
 
-      if (xTranslation >= (193 - 54 * sliderVal) && xTranslation <= (3203 + 54 * sliderVal)) {
+      if(xTranslation >= (193 - 54*sliderVal) && xTranslation <= (3203 + 54*sliderVal))
+      {
         viewCamera.setTranslateX(xTranslation);
         x0 = e.getX();
       }
-      if (yTranslation >= (128 - 33 * sliderVal) && yTranslation <= (3473 + 33 * sliderVal)) {
+      if(yTranslation >= (128 - 33*sliderVal) && yTranslation <= (3473 + 33*sliderVal))
+      {
         viewCamera.setTranslateY(yTranslation);
         y0 = e.getY();
       }
@@ -281,7 +307,8 @@ public class SpaceRockGUI extends Application {
     camZoomSlider.setMajorTickUnit(1);
     camZoomSlider.setMinorTickCount(0);
     camZoomSlider.setSnapToTicks(true);
-    camZoomSlider.setLabelFormatter(new StringConverter<Double>() {
+    camZoomSlider.setLabelFormatter(new StringConverter<Double>()
+    {
       @Override
       public String toString(Double n)
       {
@@ -295,7 +322,8 @@ public class SpaceRockGUI extends Application {
       @Override
       public Double fromString(String s)
       {
-        switch (s) {
+        switch (s)
+        {
           case "x0":
             return 0d;
           case "x2":
@@ -365,14 +393,16 @@ public class SpaceRockGUI extends Application {
       camUpdate.setTakePicture();
       scheduler.sendUpdate(camUpdate);
       newData = true;
-      // BufferedImage asteroidImage = camera.getCurrentImage();
+     // BufferedImage asteroidImage = camera.getCurrentImage();
     });
 
-    autoModeTimer = new AnimationTimer() {
+    autoModeTimer = new AnimationTimer()
+    {
       @Override
       public void handle(long now)
       {
-        if (now - prevTime > NANOSECS_AUTO_MODE_POLLRATE) {
+        if (now - prevTime > NANOSECS_AUTO_MODE_POLLRATE)
+        {
           CameraUpdate camUpdate = new CameraUpdate(UpdateType.CAMERA);
           camUpdate.setTakePicture();
           scheduler.sendUpdate(camUpdate);
@@ -390,11 +420,13 @@ public class SpaceRockGUI extends Application {
     modeSubmitButton.setOnAction(e ->
     {
       String terminalString = "";
-      if (onOff != ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On")) {
+      if(onOff != ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On"))
+      {
         terminalString += "S> State On: " + onOff + " changed to " + !onOff + "\n";
         prevOnOff = onOff;
       }
-      if (overlap != Integer.parseInt(overlapTextField.getText())) {
+      if(overlap != Integer.parseInt(overlapTextField.getText()))
+      {
         prevOverlap = overlap;
         overlap = Integer.parseInt(overlapTextField.getText());
         terminalString += "S> Overlap Size: " + prevOverlap + " changed to " + overlap + "\n";
@@ -409,38 +441,46 @@ public class SpaceRockGUI extends Application {
       //zoom = (int)zoomSlider.getValue();
 
       sectorHeight = Integer.parseInt(secTextField.getText());
-      if (sectorHeight != sectorWidth) {
+      if(sectorHeight != sectorWidth)
+      {
         terminalString += "S> Section Size: " + sectorWidth + " changed to " + sectorHeight + "\n";
         CameraUpdate camupdate = new CameraUpdate(UpdateType.CAMERA);
         camupdate.setSectionSize(sectorHeight);
         scheduler.sendUpdate(camupdate);
       }
       sectorWidth = Integer.parseInt(secTextField.getText());
-      if (!onOff) { viewCamera.setTranslateZ(500); } else { viewCamera.setTranslateZ(-500); }
+      if(!onOff) { viewCamera.setTranslateZ(500); }
+      else { viewCamera.setTranslateZ(-500); }
       takePicture.setDisable(!manualAuto || !onOff);
 
       System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() +
-        "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC"));
+          "\n\tPower status: " + (onOff ? "ON" : "OFF") + "\n\tCamera mode: " + (manualMode.isSelected() ? "MANUAL" : "AUTOMATIC"));
 
       //if the zoom has changed
-      if (zoom != previousZoomLevel) {
+      if(zoom != previousZoomLevel)
+      {
         terminalString += "S> Zoom level: " + previousZoomLevel + " changed to " + zoom + "\n";
         notifySchedulerOfZoom(zoom);
       }
       //now changed to automatic mode from manual mode, or we just turned on from previously being off
-      if (manualAuto != prevManualAuto || (onOff && !prevOnOff)) {
+      if(manualAuto != prevManualAuto || (onOff && !prevOnOff))
+      {
         terminalString += "S> Automatic Mode: " + !prevManualAuto + " changed to " + !manualAuto + "\n";
         prevManualAuto = manualAuto;
 
         //if not manual mode, and the system is on
-        if (!manualAuto && onOff) {
+        if (!manualAuto && onOff)
+        {
           autoModeTimer.start();
-        } else {
+        }
+        else
+        {
           autoModeTimer.stop();
         }
       }
       //disable the auto image polling if the camera is off
-      if (!onOff) {
+      if(!onOff)
+      {
         autoModeTimer.stop();
       }
 
@@ -537,14 +577,16 @@ public class SpaceRockGUI extends Application {
     upButton.setOnAction(event -> {
       double yTranslation = viewCamera.getTranslateY() - navButtonSensitivity;
       double sliderVal = zoomSlider.getValue();
-      if (yTranslation >= (128 - 33 * sliderVal)) {
+      if(yTranslation >= (128 - 33*sliderVal))
+      {
         viewCamera.setTranslateY(yTranslation);
       }
     });
     downButton.setOnAction(event -> {
       double yTranslation = viewCamera.getTranslateY() + navButtonSensitivity;
       double sliderVal = zoomSlider.getValue();
-      if (yTranslation <= (3473 + 33 * sliderVal)) {
+      if(yTranslation <= (3473 + 33*sliderVal))
+      {
         viewCamera.setTranslateY(yTranslation);
       }
 
@@ -552,14 +594,16 @@ public class SpaceRockGUI extends Application {
     leftButton.setOnAction(event -> {
       double xTranslation = viewCamera.getTranslateX() - navButtonSensitivity;
       double sliderVal = zoomSlider.getValue();
-      if (xTranslation >= (193 - 54 * sliderVal)) {
+      if(xTranslation >= (193 - 54*sliderVal))
+      {
         viewCamera.setTranslateX(xTranslation);
       }
     });
     rightButton.setOnAction(event -> {
       double xTranslation = viewCamera.getTranslateX() + navButtonSensitivity;
       double sliderVal = zoomSlider.getValue();
-      if (xTranslation <= (3203 + 54 * sliderVal)) {
+      if(xTranslation <= (3203 + 54*sliderVal))
+      {
         viewCamera.setTranslateX(xTranslation);
       }
 
@@ -607,7 +651,8 @@ public class SpaceRockGUI extends Application {
   {
     CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);
     previousZoomLevel = newZoom;
-    switch (newZoom) {
+    switch (newZoom)
+    {
       case 0:
         cameraUpdate.setZoomLevel(ZoomLevel.NONE);
         break;

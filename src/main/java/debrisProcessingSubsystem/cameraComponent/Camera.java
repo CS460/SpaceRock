@@ -124,7 +124,7 @@ public class Camera implements Updatable, TestableComponent {
     for(Asteroid ast : currentFrameAsteroids)
     {
       if(ast.current_location[0] - ast.current_radius > 0 && ast.current_location[1] - ast.current_radius > 0)
-      g.drawImage(ast.getRefImage(), ast.current_location[0] - ast.current_radius, ast.current_location[1] - ast.current_radius, ast.current_radius, ast.current_radius, null);
+      g.drawImage(ast.getRefImage(), ast.current_location[0] - ast.current_radius, ast.current_location[1] - ast.current_radius, ast.current_radius + 10, ast.current_radius + 10, null);
     }
 
     for(Asteroid ast : currentFrameAsteroids)
@@ -139,7 +139,7 @@ public class Camera implements Updatable, TestableComponent {
 
   private BufferedImage getSubregion(Asteroid ast)
   {
-    int minX = ast.current_location[0] - ast.current_radius, minY = ast.current_location[1] - ast.current_radius;
+    int minX = ast.current_location[0]/* - ast.current_radius*/, minY = ast.current_location[1] /*- ast.current_radius*/;
 
     return currentImage.getSubimage(minX - (minX % sectionSize) , minY - (minY % sectionSize), sectionSize, sectionSize);
   }
