@@ -1,59 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.image.*?>
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.SubScene?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="285.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sensor.Universe.SpaceRockFXMLController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="285.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sensor.Universe.SpaceRockFXMLController">
     <center>
-        <GridPane BorderPane.alignment="TOP_CENTER">
-            <BorderPane.margin>
-                <Insets top="10.0" />
-            </BorderPane.margin>
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-            </rowConstraints>
+        <VBox alignment="CENTER" spacing="5.0" style="-fx-background-color: #000000;" BorderPane.alignment="CENTER">
             <children>
-                <ImageView fx:id="imgView" fitHeight="155.0" fitWidth="254.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Label text="Selected Object Information" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                </Label>
-                <Label fx:id="timeCaptured" prefHeight="15.0" prefWidth="263.0" text="Time Captured:" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
-                    <font>
-                        <Font size="10.0" />
-                    </font>
-                    <padding>
-                        <Insets left="30.0" />
-                    </padding>
-                    <GridPane.margin>
-                        <Insets left="-10.0" />
-                    </GridPane.margin>
-                </Label>
+                <ImageView fx:id="imgView" fitHeight="225.0" fitWidth="225.0" pickOnBounds="true" preserveRatio="true" />
             </children>
-        </GridPane>
+        </VBox>
     </center>
+    <top>
+        <Label text="Selected Object Information" BorderPane.alignment="CENTER">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+            <BorderPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </BorderPane.margin>
+        </Label>
+    </top>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+    </padding>
     <bottom>
         <GridPane prefHeight="149.0" prefWidth="275.0" BorderPane.alignment="CENTER">
             <columnConstraints>
@@ -82,4 +56,5 @@
             </children>
         </GridPane>
     </bottom>
+
 </BorderPane>
