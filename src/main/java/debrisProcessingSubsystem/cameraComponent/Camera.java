@@ -8,6 +8,8 @@ import fpga.memory.MemoryMap;
 import fpga.memory.NoSuchRegisterFoundException;
 import fpga.memory.UnavailbleRegisterException;
 import fpga.objectdetection.Debris;
+import sensor.Universe.TestUniverseThread;
+import sensor.Universe.UniverseThread;
 import sensor.ZoomLevel;
 
 import java.util.ArrayList;
@@ -28,7 +30,10 @@ public class Camera implements Updatable, TestableComponent {
   private boolean DEBUG = true;
   private CameraStatusReport cameraStatusModel;
   private MemoryMapAccessor memoryMap;
+  public UniverseThread universe;
   public Camera() {
+    universe = new UniverseThread();
+    universe.run();
     cameraStatusModel = new CameraStatusReport();
     //TODO plug in fake memory map.
     memoryMap = new TestingFPGAComs();
