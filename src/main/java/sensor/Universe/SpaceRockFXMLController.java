@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -67,6 +68,8 @@ public class SpaceRockFXMLController implements Initializable
       System.out.println();
       imgView.setStyle("-fx-background-color: BLACK");
       imgView.setImage(this.image);
+      requestFrameButton.setDisable(true);
+      requestFrameButton.setTooltip(new Tooltip("The raw image for this asteroid is displayed."));
     }
   }
 

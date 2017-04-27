@@ -43,6 +43,7 @@ public class Camera implements Updatable, TestableComponent {
   private AltUniverseThread universe;
   private BufferedImage currentImage = null;
   private Asteroid[] currentFrameAsteroids;
+  private int sectionSize = 100;
 
   public Camera() {
     universe = new AltUniverseThread(5);
@@ -135,9 +136,9 @@ public class Camera implements Updatable, TestableComponent {
     memoryMap.takePicture();
   }
 
-  public BufferedImage getSubregion(Asteroid ast)
+  private BufferedImage getSubregion(Asteroid ast)
   {
-    return currentImage.getSubimage(ast.current_location[0], ast.current_location[1], ast.current_radius, ast.current_radius);
+    return currentImage.getSubimage(ast.current_location[0] - (ast.current_location[0] % sectionSize) , ast.current_location[1] - (ast.current_location[1] % sectionSize), sectionSize, sectionSize);
   }
 
   /* Raw frame will be returned with every debris object.
@@ -158,6 +159,7 @@ public class Camera implements Updatable, TestableComponent {
     OperatorUpdate outgoingUpdate = new OperatorUpdate(UpdateType.OPERATOR);
     outgoingUpdate.setCameraStatus(cameraStatusModel);
   }
+
 
   // Divya
   /* Camera should call this internally when the image is finished.
@@ -212,6 +214,10 @@ public class Camera implements Updatable, TestableComponent {
           //process_image();
           if (DEBUG) System.out.println("Received PROCESS_IMAGE update.");
           break;
+        case SECTION_SIZE:
+          sectionSize = (int)value;
+          if (DEBUG) System.out.println("Received SECTION_SIZE update.");
+          break;
         default:
           throw new RuntimeException("I don't understand what you want me to do.");
       }
@@ -227,20 +233,6 @@ public class Camera implements Updatable, TestableComponent {
     } else {
       return outgoing_updates.removeFirst();
     }
-  }
-  public BufferedImage getCurrentImage()
-  {
-
-    try
-    {
-      ImageIO.write(currentImage, ".png", new File("D:\\myimage.png"));
-      System.out.println("printed to file!");
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
-    return currentImage;
   }
 
   public void addUpdateForScheduler(Update update){

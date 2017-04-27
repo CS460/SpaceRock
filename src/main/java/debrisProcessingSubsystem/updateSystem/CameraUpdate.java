@@ -19,6 +19,7 @@ public class CameraUpdate extends Update
     TAKE_PICTURE,
     SET_ZOOM,
     PROCESS_IMAGE,
+    SECTION_SIZE,
   }
 
   private HashMap<CameraUpdateParameters, Object> param_map;
@@ -55,11 +56,16 @@ public class CameraUpdate extends Update
   }
 
   public void setZoomLevel(ZoomLevel zoom_level) {
-    System.out.println("set new zoom");
+    //System.out.println("set new zoom");
     param_map.put(CameraUpdateParameters.SET_ZOOM, zoom_level);
     param_map.remove(CameraUpdateParameters.TURN_ON_CAMERA);
     param_map.remove(CameraUpdateParameters.TURN_OFF_CAMERA);
     param_map.remove(CameraUpdateParameters.RESET_CAMERA);
+  }
+  public void setSectionSize(int sectionSize)
+  {
+    param_map.clear();
+    param_map.put(CameraUpdateParameters.SECTION_SIZE, sectionSize);
   }
 
   public void setProcessImage() {
