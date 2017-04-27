@@ -6,13 +6,10 @@ import debrisProcessingSubsystem.cameraComponent.Camera;
 import debrisProcessingSubsystem.debrisCollection.DebrisCollection;
 import debrisProcessingSubsystem.operatorComponent.OperatorTesting;
 import debrisProcessingSubsystem.updateSystem.CameraUpdate;
-import debrisProcessingSubsystem.updateSystem.OperatorUpdate;
 import debrisProcessingSubsystem.updateSystem.UpdateType;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.*;
@@ -31,8 +28,6 @@ import javafx.util.StringConverter;
 import operator.commands.Asteroid;
 import operator.commands.AsteroidData;
 import operator.commands.IncomingListener;
-import operator.network.Connection;
-import operator.network.DummySat;
 import operator.processing.DebrisProcessor;
 import sensor.ZoomLevel;
 
@@ -44,7 +39,7 @@ import java.util.List;
 /**
  * @author Sahba and Kathrina
  */
-public class SpaceRockGUI extends Application implements IncomingListener
+public class SpaceRockGUI extends Application
 {
   private static final long NANOSECS_AUTO_MODE_POLLRATE = 1_000_000_000;
   private long prevTime = 0;
@@ -52,18 +47,11 @@ public class SpaceRockGUI extends Application implements IncomingListener
   private static final int CAMERA_ZOOM_COEF = 150;
   private static final int MAIN_PANE_H = 400;
   private static final double MAIN_PANE_W = 600;
-  private static final int DEFAULT_SECTOR_WIDTH = 100;
-  private static final int DEFAULT_SECTOR_HEIGHT = 100;
   private int sectorWidth = 100;
   private int sectorHeight = 100;
-  private final DebrisProcessor processor = new DebrisProcessor();
- // private final Connection netLink = new Connection();
-  //private final DummySat satellite = new DummySat();
   private TextArea terminalText;
   private PerspectiveCamera viewCamera;
   private Group rockGroup = new Group();
-  private Asteroid[] lastFrame = null;
-  private boolean newData = false;
   private double x0 = 0;
   private double y0 = 0;
   private Slider zoomSlider = new Slider(-5, 5, 0);
@@ -80,24 +68,6 @@ public class SpaceRockGUI extends Application implements IncomingListener
   private int previousZoomLevel = 0;
   private AnimationTimer autoModeTimer;
   private SubScene view;
-
-
-  private AnimationTimer timer = new AnimationTimer()
-  {
-    @Override
-    public void handle(long now)
-    {
-      if (newData)
-      {
-        ObservableList<Node> children = rockGroup.getChildren();
-        children.clear();
-        children.add(viewCamera);
-        children.addAll(getAsteroidNodes());
-        newData = false;
-      }
-    }
-  };
-
 
   public static void main(String[] args)
   {
@@ -116,11 +86,7 @@ public class SpaceRockGUI extends Application implements IncomingListener
     //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
 
     view = createView();
-    //satellite.start();
-    //netLink.addIncomingListener(this);
-    //netLink.connectToDummySat();
-    //netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, false, false);//starting the camera off and in automatic mode
-    timer.start();
+    //timer.start();
     BorderPane mainPane = new BorderPane(view);
     mainPane.setMaxHeight(600);
     mainPane.setMaxWidth(800);
@@ -325,15 +291,6 @@ public class SpaceRockGUI extends Application implements IncomingListener
       CameraUpdate camUpdate = new CameraUpdate(UpdateType.CAMERA);
       camUpdate.setTakePicture();
       scheduler.sendUpdate(camUpdate);
-
-      /*try
-      {
-        netLink.sendCameraSpec(zoom, sectorHeight, sectorWidth, onOff, manualAuto);
-      }
-      catch (IOException e1)
-      {
-        e1.printStackTrace();
-      }*/
     });
 
     autoModeTimer = new AnimationTimer()
@@ -374,14 +331,6 @@ public class SpaceRockGUI extends Application implements IncomingListener
         terminalString += "S> Section Size: " + sectorWidth + " changed to " + sectorHeight + "\n";
       }
       sectorWidth = Integer.parseInt(secTextField.getText());
-      /*try
-      {
-        netLink.sendCameraSpec(zoom, sectorHeight, sectorWidth, onOff, manualAuto);
-      }
-      catch (IOException e1)
-      {
-        e1.printStackTrace();
-      }*/
       if(!onOff) { viewCamera.setTranslateZ(500); }
       else { viewCamera.setTranslateZ(-500); }
       takePicture.setDisable(!manualAuto || !onOff);
@@ -434,14 +383,6 @@ public class SpaceRockGUI extends Application implements IncomingListener
       overlapTextField.setText("32");
       camZoomSlider.setValue(0);
       secTextField.setText("100");
-      /*try
-      {
-        netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
-      }
-      catch (IOException e1)
-      {
-        e1.printStackTrace();
-      }*/
       viewCamera.setTranslateZ(-500);
       takePicture.setDisable(false);
       CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);
@@ -571,94 +512,5 @@ public class SpaceRockGUI extends Application implements IncomingListener
         break;
     }
     scheduler.sendUpdate(cameraUpdate);
-  }
-
-
-  /**
-   * Convert all Asteroids to renderable Spheres and return them in a List
-   *
-   * @return List of Asteroid Spheres
-   */
-  private List<Node> getAsteroidNodes()
-  {
-    List<Node> nodeList = new ArrayList<>(lastFrame.length * 2);
-    for (Asteroid a : lastFrame)
-    {
-      Sphere sphere = makeAsteroidSphere(a);
-      nodeList.add(sphere);
-    }
-    return nodeList;
-  }
-
-
-  /**
-   * Make a Sphere representing some Asteroid
-   *
-   * @param a Asteroid to use as a basis
-   * @return a Sphere with the asteroid's ID drawn on it
-   */
-  private Sphere makeAsteroidSphere(Asteroid a)
-  {
-    Sphere s = new Sphere(a.size);
-    PhongMaterial mat = new PhongMaterial(Color.BURLYWOOD);
-    s.setTranslateX(a.getLoc().getX());
-    s.setTranslateY(a.getLoc().getY());
-    s.setMaterial(mat);
-    s.setOnMouseClicked(mouseEvent ->
-    {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("SpaceRockPopup.fxml"));
-      Scene newScene;
-      Parent root;
-      try
-      {
-        root = loader.load();
-        newScene = new Scene(root);
-      }
-      catch (IOException ex)
-      {
-        // TODO: handle error
-        return;
-      }
-      SpaceRockFXMLController controller = loader.getController();
-
-      controller.setData(a);
-      Stage inputStage = new Stage();
-      inputStage.setScene(newScene);
-
-      inputStage.show();
-
-    });
-    return s;
-  }
-
-
-  @Override
-  public void newAsteroidData(AsteroidData[] asteroids, long timestamp)
-  {
-    lastFrame = asteroidsFromData(asteroids);
-    processor.addAndAssign(lastFrame);
-
-    newData = true;
-  }
-
-
-  /* Convert an AsteroidData array to an array of Asteroids prepared for the DebrisProcessor */
-  private Asteroid[] asteroidsFromData(AsteroidData[] data)
-  {
-    Asteroid[] asteroids = new Asteroid[data.length];
-    for (int i = 0; i < data.length; i++)
-    {
-      AsteroidData d = data[i];
-      asteroids[i] = new Asteroid(d.getLoc(), d.getID(), d.getSize(), Instant.now());
-    }
-    return asteroids;
-  }
-
-
-  @Override
-  public void newImageData(java.awt.Image img, long id)
-  {
-        /* TODO: Something meaningful here */
-    System.out.println("Got new image!");
   }
 }
