@@ -23,6 +23,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Sphere;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -85,6 +86,19 @@ public class SpaceRockGUI extends Application
         children.clear();
         children.add(viewCamera);
         children.addAll(camera.getAsteroidNodes());
+        for(int i = 0; i <= 4000; i+= sectorHeight)
+        {
+          Line line = new Line(i,0,i,4000);
+          line.setStrokeWidth(5);
+          line.setStroke(Color.WHITE);
+          line.setFill(Color.WHITE);
+
+          Line line2 = new Line(0,i,4000,i);
+          line2.setStrokeWidth(5);
+          line2.setStroke(Color.WHITE);
+          line2.setFill(Color.WHITE);
+          rockGroup.getChildren().addAll(line,line2);
+        }
 
         if(TESTING_FRAME_BOUNDARIES)
         {
@@ -136,7 +150,12 @@ public class SpaceRockGUI extends Application
     //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
     timer.start();
 
+
     view = createView();
+
+    //@Austin, added to make the top right coordinates of the camera (0,0) on the plane
+    viewCamera.setTranslateX(197);
+    viewCamera.setTranslateY(130);
     //timer.start();
     BorderPane mainPane = new BorderPane(view);
     mainPane.setMaxHeight(600);
@@ -150,6 +169,7 @@ public class SpaceRockGUI extends Application
     stage.setTitle("Space Rock Control Center");
     stage.setResizable(false);
     //set textarea here
+
     view.setOnScroll((ScrollEvent event) ->
       zoomSlider.adjustValue(zoomSlider.getValue() + event
         .getDeltaY() /
@@ -172,19 +192,20 @@ public class SpaceRockGUI extends Application
       double xTranslation = viewCamera.getTranslateX() + (x0 - e.getX()) * factorW;
       double yTranslation = viewCamera.getTranslateY() + (y0 - e.getY()) * factorH;
 
-      if(xTranslation >= 0 && xTranslation <= 4000)
+      if(xTranslation >= 195 && xTranslation <= 3203)
       {
         viewCamera.setTranslateX(xTranslation);
         x0 = e.getX();
       }
-      if(yTranslation >= 0 && yTranslation <= 4000)
+      if(yTranslation >= 128 && yTranslation <= 3473)
       {
         viewCamera.setTranslateY(yTranslation);
         y0 = e.getY();
       }
 
-
     });
+
+
     stage.show();
   }
 
@@ -555,6 +576,7 @@ public class SpaceRockGUI extends Application
     SubScene scene = new SubScene(rockGroup, MAIN_PANE_W, MAIN_PANE_H);
     scene.setFill(Color.BLACK);
     scene.setCamera(viewCamera);
+
     viewCamera.setTranslateZ(-500);
     return scene;
   }
