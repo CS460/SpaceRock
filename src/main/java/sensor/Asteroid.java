@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -23,11 +24,11 @@ public class Asteroid
   private static int nextid = 0;
   public int[] current_location;
   public int current_radius;
+  public int originalRad;
   private int[] initial_location;
   private int size;
   private int[] trajectory;
   private int id;
-  public int originalRad;
   private BufferedImage refImage = null;
   private BufferedImage image = null;
   //private HashMap<Integer, Integer[]> hist_location;
@@ -72,6 +73,15 @@ public class Asteroid
     nextid += 1;
   }
 
+  public Instant getTimestamp()
+  {
+    return Instant.now();
+  }
+
+  public int getVelocity()
+  {
+    return (this.trajectory[0] + this.trajectory[1]) / 2;
+  }
   public void setRad(int zoomFactor)
   {
     current_radius = originalRad * zoomFactor;
@@ -133,6 +143,13 @@ public class Asteroid
   {
     return image;
   }
+
+  public void setImage(BufferedImage image)
+  {
+    this.image = image;
+    this.fximage = SwingFXUtils.toFXImage(this.image, null);
+  }
+
   public Image getFXImage()
   {
     return fximage;
@@ -166,11 +183,6 @@ public class Asteroid
     catch (IOException e)
     {
     }
-  }
-  public void setImage(BufferedImage image)
-  {
-    this.image = image;
-    this.fximage = SwingFXUtils.toFXImage(this.image,null);
   }
 }
 

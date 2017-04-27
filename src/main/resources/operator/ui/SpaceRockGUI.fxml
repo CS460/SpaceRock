@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.layout.*?>
-
-<BorderPane fx:id="borderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="operator.ui.GUIController">
+<?import javafx.scene.SubScene?>
+<?import javafx.scene.text.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="borderPane" xmlns="http://javafx.com/javafx/8"
+            fx:controller="operator.ui.GUIController">
    <right>
       <VBox alignment="CENTER" spacing="5.0" style="-fx-background-color: #eee;" BorderPane.alignment="CENTER">
          <children>
@@ -177,7 +177,8 @@
                <children>
                   <Label alignment="CENTER" contentDisplay="RIGHT" text="Frame Zoom: ">
                      <graphic>
-                        <Slider fx:id="zoomSlider" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" min="-5.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                         <Slider fx:id="zoomSlider" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" min="-5.0"
+                                 minorTickCount="1" showTickLabels="true" showTickMarks="true"/>
                      </graphic>
                   </Label>
                   <Separator orientation="VERTICAL">

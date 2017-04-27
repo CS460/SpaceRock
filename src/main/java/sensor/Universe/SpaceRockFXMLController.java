@@ -9,7 +9,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -29,9 +28,6 @@ public class SpaceRockFXMLController implements Initializable
   private Label objectID;
 
   @FXML
-  private Label threatLevel;
-
-  @FXML
   private Label velocity;
 
   @FXML
@@ -45,7 +41,7 @@ public class SpaceRockFXMLController implements Initializable
 
   private long ID;
   private Instant timestamp;
-  private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+  private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
   private Image image;
 
   public void setData(sensor.Asteroid asteroid)
@@ -54,10 +50,11 @@ public class SpaceRockFXMLController implements Initializable
     this.size = asteroid.originalRad;
     if(size == 0) size = asteroid.current_radius;
     this.ID = asteroid.getId();
-    //this.timestamp = asteroid.timestamp;
+    this.timestamp = asteroid.getTimestamp();
     diameter.setText("" + Math.round(size));
     objectID.setText("" + ID);
-    //timeCaptured.setText("Timestamp: " + timestamp.toString());
+    this.velocity.setText(Integer.toString(asteroid.getVelocity()) + " d/t");
+    timeCaptured.setText("Timestamp: " + String.format(timestamp.toString(), formatter));
   }
 
   @FXML

@@ -1,8 +1,6 @@
 package sensor.Universe;
 
 import debrisProcessingSubsystem.debrisCollection.DebrisCollection;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -24,12 +22,11 @@ import java.util.List;
 public class AltUniverseThread extends Thread
 {
   private static final int START_X = 200, START_Y = 200, START_Z = 100;
-
-  private Asteroid[] lastFrame = null;
   Asteroid asteroid;
+  int id;
+  private Asteroid[] lastFrame = null;
   private long previousTime = 0;
   private int i = 0;
-  int id;
   private DebrisCollection debrisCollection = new DebrisCollection();
 
   private volatile boolean safeToGet = true; //thread safety measure
@@ -213,7 +210,7 @@ public class AltUniverseThread extends Thread
     s.setMaterial(mat);
     s.setOnMouseClicked(mouseEvent ->
     {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("sensor/Universe/SpaceRockPopup.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("SpaceRockPopup.fxml"));
       Scene newScene;
       Parent root;
       try
