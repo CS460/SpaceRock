@@ -29,6 +29,12 @@ public class Asteroid {
   public int[] current_location;
   public int current_radius;
 
+  public int getSize(){return this.size;}
+
+  public int[] getStartingLocation(){return initial_location;}
+
+  public int[] getTrajectory(){return trajectory;}
+
   public Asteroid(int[] initial_location, int size, int[] trajectory, int elapsed_time) {
     this.initial_location = initial_location;
     this.size = size;
@@ -102,3 +108,10 @@ public class Asteroid {
     }
   }
 }
+
+
+
+
+
+
+
