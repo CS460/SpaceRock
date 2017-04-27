@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.SubScene?>
 <?import javafx.scene.control.Label?>
@@ -10,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="285.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="operator.ui.SpaceRockFXMLController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="285.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="operator.ui.SpaceRockFXMLController">
    <center>
       <GridPane BorderPane.alignment="TOP_CENTER">
          <BorderPane.margin>
@@ -75,6 +81,7 @@
             <Label fx:id="threatLevel" prefHeight="16.0" prefWidth="97.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <Label fx:id="velocity" prefHeight="16.0" prefWidth="109.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <Label fx:id="diameter" prefHeight="16.0" prefWidth="105.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="189.0" text="Request Raw Frame" translateX="13.0" translateY="-3.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </bottom>
