@@ -43,6 +43,8 @@ import java.util.List;
  */
 public class SpaceRockGUI extends Application
 {
+  private static final boolean TESTING_FRAME_BOUNDARIES = true;
+
   private static final long NANOSECS_AUTO_MODE_POLLRATE = 2_000_000_000;
   private long prevTime = 0;
 
@@ -83,6 +85,35 @@ public class SpaceRockGUI extends Application
         children.clear();
         children.add(viewCamera);
         children.addAll(camera.getAsteroidNodes());
+
+        if(TESTING_FRAME_BOUNDARIES)
+        {
+          Sphere s = new Sphere(5);
+          s.setMaterial(new PhongMaterial(Color.ALICEBLUE));
+          Sphere s1 = new Sphere(5);
+          s.setMaterial(new PhongMaterial(Color.ALICEBLUE));
+          Sphere s2 = new Sphere(5);
+          s.setMaterial(new PhongMaterial(Color.ALICEBLUE));
+          Sphere s3 = new Sphere(5);
+          s.setMaterial(new PhongMaterial(Color.ALICEBLUE));
+
+          s.setTranslateX(0);
+          s.setTranslateY(0);
+          children.add(s);
+
+          s1.setTranslateX(4000);
+          s1.setTranslateY(0);
+          children.add(s1);
+
+          s2.setTranslateY(4000);
+          s2.setTranslateX(4000);
+          children.add(s2);
+
+          s3.setTranslateY(4000);
+          s3.setTranslateX(0);
+          children.add(s3);
+        }
+
         newData = false;
       }
     }

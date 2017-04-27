@@ -11,8 +11,6 @@ import fpga.objectdetection.Debris;
 import javafx.scene.Node;
 import sensor.Asteroid;
 import sensor.Universe.AltUniverseThread;
-import sensor.Universe.TestUniverseThread;
-import sensor.Universe.UniverseThread;
 import sensor.ZoomLevel;
 
 import javax.imageio.ImageIO;
