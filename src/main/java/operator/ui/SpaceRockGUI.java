@@ -57,8 +57,8 @@ public class SpaceRockGUI extends Application implements IncomingListener
   private int sectorWidth = 100;
   private int sectorHeight = 100;
   private final DebrisProcessor processor = new DebrisProcessor();
-  private final Connection netLink = new Connection();
-  private final DummySat satellite = new DummySat();
+ // private final Connection netLink = new Connection();
+  //private final DummySat satellite = new DummySat();
   private TextArea terminalText;
   private PerspectiveCamera viewCamera;
   private Group rockGroup = new Group();
@@ -116,10 +116,10 @@ public class SpaceRockGUI extends Application implements IncomingListener
     //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
 
     view = createView();
-    satellite.start();
-    netLink.addIncomingListener(this);
-    netLink.connectToDummySat();
-    netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, false, false);//starting the camera off and in automatic mode
+    //satellite.start();
+    //netLink.addIncomingListener(this);
+    //netLink.connectToDummySat();
+    //netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, false, false);//starting the camera off and in automatic mode
     timer.start();
     BorderPane mainPane = new BorderPane(view);
     mainPane.setMaxHeight(600);
@@ -326,14 +326,14 @@ public class SpaceRockGUI extends Application implements IncomingListener
       camUpdate.setTakePicture();
       scheduler.sendUpdate(camUpdate);
 
-      try
+      /*try
       {
         netLink.sendCameraSpec(zoom, sectorHeight, sectorWidth, onOff, manualAuto);
       }
       catch (IOException e1)
       {
         e1.printStackTrace();
-      }
+      }*/
     });
 
     autoModeTimer = new AnimationTimer()
@@ -374,14 +374,14 @@ public class SpaceRockGUI extends Application implements IncomingListener
         terminalString += "S> Section Size: " + sectorWidth + " changed to " + sectorHeight + "\n";
       }
       sectorWidth = Integer.parseInt(secTextField.getText());
-      try
+      /*try
       {
         netLink.sendCameraSpec(zoom, sectorHeight, sectorWidth, onOff, manualAuto);
       }
       catch (IOException e1)
       {
         e1.printStackTrace();
-      }
+      }*/
       if(!onOff) { viewCamera.setTranslateZ(500); }
       else { viewCamera.setTranslateZ(-500); }
       takePicture.setDisable(!manualAuto || !onOff);
@@ -434,14 +434,14 @@ public class SpaceRockGUI extends Application implements IncomingListener
       overlapTextField.setText("32");
       camZoomSlider.setValue(0);
       secTextField.setText("100");
-      try
+      /*try
       {
         netLink.sendCameraSpec(zoom, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, onOff, manualAuto);
       }
       catch (IOException e1)
       {
         e1.printStackTrace();
-      }
+      }*/
       viewCamera.setTranslateZ(-500);
       takePicture.setDisable(false);
       CameraUpdate cameraUpdate = new CameraUpdate(UpdateType.CAMERA);

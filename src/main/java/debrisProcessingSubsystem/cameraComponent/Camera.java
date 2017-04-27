@@ -33,7 +33,8 @@ public class Camera implements Updatable, TestableComponent {
   public UniverseThread universe;
   public Camera() {
     universe = new UniverseThread();
-    universe.run();
+    universe.setDaemon(true);
+    universe.start();
     cameraStatusModel = new CameraStatusReport();
     //TODO plug in fake memory map.
     memoryMap = new TestingFPGAComs();

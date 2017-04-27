@@ -24,7 +24,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UniverseThread implements Runnable, IncomingListener
+public class UniverseThread extends Thread implements IncomingListener
 {
   private static final int DEFAULT_SECTOR_WIDTH = 100;
   private static final int DEFAULT_SECTOR_HEIGHT = 100;
@@ -34,11 +34,6 @@ public class UniverseThread implements Runnable, IncomingListener
   private Group rockGroup = new Group();
   private Asteroid[] lastFrame = null;
   private boolean newData = false;
-  private debrisProcessingSubsystem.cameraComponent.Camera camera;
-  private OperatorTesting operator;
-  private DebrisCollection collection;
-  //private OperatorUpdate operatorUpdate;
-  private Scheduler scheduler;
   
   private boolean safeToGet = true; //thread safety measure
   
@@ -48,11 +43,7 @@ public class UniverseThread implements Runnable, IncomingListener
     try
     {
       boolean incr = true;
-      this.camera = new Camera();
-      this.operator = new OperatorTesting();
-      this.collection = new DebrisCollection();
-  
-      this.scheduler = new Scheduler(collection, operator, camera);
+
       //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
   
       int i = 0;
