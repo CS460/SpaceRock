@@ -39,7 +39,7 @@ public class SpaceRockFXMLController implements Initializable {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public void setData(Asteroid asteroid) {
-        this.size = asteroid.current_radius;
+        this.size = asteroid.originalRad;
         this.ID = asteroid.getId();
         //this.timestamp = asteroid.timestamp;
         diameter.setText("" + Math.round(size));
