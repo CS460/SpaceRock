@@ -89,12 +89,12 @@ public class SpaceRockGUI extends Application
         for(int i = 0; i <= 4000; i+= sectorHeight)
         {
           Line line = new Line(i,0,i,4000);
-          line.setStrokeWidth(1);
+          line.setStrokeWidth(2);
           line.setStroke(Color.WHITE);
           line.setFill(Color.WHITE);
 
           Line line2 = new Line(0,i,4000,i);
-          line2.setStrokeWidth(1);
+          line2.setStrokeWidth(2);
           line2.setStroke(Color.WHITE);
           line2.setFill(Color.WHITE);
           rockGroup.getChildren().addAll(line,line2);
@@ -171,9 +171,16 @@ public class SpaceRockGUI extends Application
     //set textarea here
 
     view.setOnScroll((ScrollEvent event) ->
-      zoomSlider.adjustValue(zoomSlider.getValue() + event
-        .getDeltaY() /
-        100));
+    {
+      double cameraX = viewCamera.getTranslateX();
+      double cameraY = viewCamera.getTranslateY();
+      double newValue = zoomSlider.getValue() + event.getDeltaY() / 100;
+      if((cameraX >= (193 - 54*newValue) && cameraX <= (3203 + 54*newValue))
+              && (cameraY >= (128 - 33*newValue) && cameraY <= (3473 + 33*newValue))) {
+        zoomSlider.adjustValue(newValue);
+      }
+    });
+
     view.setOnMousePressed((MouseEvent ev) ->
     {
       x0 = ev.getX();
@@ -191,13 +198,14 @@ public class SpaceRockGUI extends Application
       final double factorW = viewLen / (MAIN_PANE_W / 2);
       double xTranslation = viewCamera.getTranslateX() + (x0 - e.getX()) * factorW;
       double yTranslation = viewCamera.getTranslateY() + (y0 - e.getY()) * factorH;
+      double sliderVal = zoomSlider.getValue();
 
-      if(xTranslation >= 195 && xTranslation <= 3203)
+      if(xTranslation >= (193 - 54*sliderVal) && xTranslation <= (3203 + 54*sliderVal))
       {
         viewCamera.setTranslateX(xTranslation);
         x0 = e.getX();
       }
-      if(yTranslation >= 128 && yTranslation <= 3473)
+      if(yTranslation >= (128 - 33*sliderVal) && yTranslation <= (3473 + 33*sliderVal))
       {
         viewCamera.setTranslateY(yTranslation);
         y0 = e.getY();
@@ -471,6 +479,7 @@ public class SpaceRockGUI extends Application
       modeGroup.selectToggle(manualMode);
       overlapTextField.setText("32");
       camZoomSlider.setValue(0);
+      zoomSlider.setValue(0);
       secTextField.setText("100");
       viewCamera.setTranslateZ(-500);
       takePicture.setDisable(false);
