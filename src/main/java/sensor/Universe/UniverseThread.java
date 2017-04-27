@@ -13,12 +13,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
 import javafx.stage.Stage;
+//import operator.commands.Asteroid;
 import operator.commands.Asteroid;
 import operator.commands.AsteroidData;
 import operator.commands.IncomingListener;
 import operator.network.Connection;
 import operator.network.DummySat;
 import operator.processing.DebrisProcessor;
+//import sensor.Asteroid;
+
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -56,7 +59,7 @@ public class UniverseThread extends Thread implements IncomingListener
         if (incr) i++;
         if (i == 1000000)
         {
-          System.out.println("POP");
+          //System.out.println("POP");
           netLink.sendCameraSpec(0, DEFAULT_SECTOR_HEIGHT, DEFAULT_SECTOR_WIDTH, true, false);
           incr = false;
           i++;
@@ -69,7 +72,7 @@ public class UniverseThread extends Thread implements IncomingListener
           safeToGet = false;
           ObservableList<Node> children = rockGroup.getChildren();
           children.clear();
-          children.addAll(getAsteroidNodes());
+          //children.addAll(getAsteroidNodes());
           for (Asteroid child : lastFrame)
           {
             System.out.println("In UniverseThread: " + child);
@@ -100,6 +103,7 @@ public class UniverseThread extends Thread implements IncomingListener
    *
    * @return List of Asteroid Spheres
    */
+
   private List<Node> getAsteroidNodes()
   {
     List<Node> nodeList = new ArrayList<>(lastFrame.length * 2);
@@ -110,14 +114,14 @@ public class UniverseThread extends Thread implements IncomingListener
     }
     return nodeList;
   }
-
-
+/*
   /**
    * Make a Sphere representing some Asteroid
    *
    * @param a Asteroid to use as a basis
    * @return a Sphere with the asteroid's ID drawn on it
    */
+
   private Sphere makeAsteroidSphere(Asteroid a)
   {
     Sphere s = new Sphere(a.size);

@@ -1,7 +1,11 @@
 package operator.commands;
 
+import javax.imageio.ImageIO;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.time.Instant;
+import java.util.Random;
 
 /**
  * Created by magik on 2/5/2017. Modified by David R., 2/12/2017
@@ -13,7 +17,11 @@ import java.time.Instant;
  */
 public class Asteroid implements AsteroidData {
 
+    private static final String[] asteroid_images = {"asteroid_1.png", "asteroid_2.png", "asteroid_3.png",
+        "asteroid_4.png", "asteroid_5.png"};
+
     public final Point2D location;
+    private BufferedImage image;
     public final double size;
     public long id;
     public Instant timestamp;
@@ -24,6 +32,7 @@ public class Asteroid implements AsteroidData {
         this.id = id;
         this.size = size;
         this.timestamp = timestamp;
+        setRandomImage();
     }
 
 
@@ -49,5 +58,21 @@ public class Asteroid implements AsteroidData {
     @Override
     public long getID() {
         return id;
+    }
+
+    private void setRandomImage() {
+        Random rand = new Random();
+        String asteroid_image = asteroid_images[rand.nextInt(asteroid_images.length)];
+        //System.out.format("setting imageView to: %s\n", asteroid_image);
+        try {
+
+            this.image = ImageIO.read(sensor.Asteroid.class.getResource("asteroids/" + asteroid_image));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public BufferedImage getImage()
+    {
+        return image;
     }
 }
