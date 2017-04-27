@@ -16,7 +16,7 @@ public class Asteroid
 {
   private static final int[] size_range = {10, 100};
   private static final int[] distance_range = {100, 1000};
-  private static final int[] speed_range = {0, 50};
+  private static final int[] speed_range = {-15, 50};
   private static final String[] asteroid_images = {"asteroid_1.png", "asteroid_2.png", "asteroid_3.png",
     "asteroid_4.png", "asteroid_5.png"};
 
