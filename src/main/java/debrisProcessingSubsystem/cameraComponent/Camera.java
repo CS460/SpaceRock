@@ -82,7 +82,18 @@ public class Camera implements Updatable, TestableComponent {
   /**
    * Tell camera to take a picture.
    */
-  private void takePicture() {
+  private void takePicture()
+  {
+    //@author Denver
+
+    //right here is where the camera should save a BufferedImage of what it sees of the universe
+    //it should also tell the debris collection system all the information about the debris within it's view
+    //(that means generating an update to be sent to debris collection)
+
+    //this also means determining the raw image that we should be sending to the debris collection for each asteroid
+    //shouldn't be too hard - just calculate the "box" it should be in based on section sizes, and grab that box
+    //from the camera's overall saved image view
+
     memoryMap.takePicture();
   }
 
