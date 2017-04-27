@@ -44,6 +44,7 @@ public class Camera implements Updatable, TestableComponent {
   private BufferedImage currentImage = null;
   private Asteroid[] currentFrameAsteroids;
   private int sectionSize = 100;
+  private int overlap = 32;
 
   public Camera() {
     universe = new AltUniverseThread(10);
@@ -122,13 +123,13 @@ public class Camera implements Updatable, TestableComponent {
 
     for(Asteroid ast : currentFrameAsteroids)
     {
-      if(ast.current_location[0] > 0 && ast.current_location[1] > 0)
-      g.drawImage(ast.getRefImage(), ast.current_location[0]/* - ast.current_radius*/, ast.current_location[1]/* - ast.current_radius*/, ast.current_radius, ast.current_radius, null);
+      if(ast.current_location[0] - ast.current_radius > 0 && ast.current_location[1] - ast.current_radius > 0)
+      g.drawImage(ast.getRefImage(), ast.current_location[0] - ast.current_radius, ast.current_location[1] - ast.current_radius, ast.current_radius, ast.current_radius, null);
     }
 
     for(Asteroid ast : currentFrameAsteroids)
     {
-      if(ast.current_location[0] > 0 && ast.current_location[1] > 0)
+      if(ast.current_location[0]- ast.current_radius > 0 && ast.current_location[1] - ast.current_radius > 0)
       ast.setImage(this.getSubregion(ast));
     }
 
@@ -138,7 +139,9 @@ public class Camera implements Updatable, TestableComponent {
 
   private BufferedImage getSubregion(Asteroid ast)
   {
-    return currentImage.getSubimage(ast.current_location[0] - (ast.current_location[0] % sectionSize) , ast.current_location[1] - (ast.current_location[1] % sectionSize), sectionSize, sectionSize);
+    int minX = ast.current_location[0] - ast.current_radius, minY = ast.current_location[1] - ast.current_radius;
+
+    return currentImage.getSubimage(minX - (minX % sectionSize) , minY - (minY % sectionSize), sectionSize, sectionSize);
   }
 
   /* Raw frame will be returned with every debris object.
@@ -217,6 +220,10 @@ public class Camera implements Updatable, TestableComponent {
         case SECTION_SIZE:
           sectionSize = (int)value;
           if (DEBUG) System.out.println("Received SECTION_SIZE update.");
+          break;
+        case OVERLAP_SIZE:
+          overlap = (int)value;
+          if (DEBUG) System.out.println("Received OVERLAP_SIZE update.");
           break;
         default:
           throw new RuntimeException("I don't understand what you want me to do.");

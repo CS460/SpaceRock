@@ -20,6 +20,7 @@ public class CameraUpdate extends Update
     SET_ZOOM,
     PROCESS_IMAGE,
     SECTION_SIZE,
+    OVERLAP_SIZE,
   }
 
   private HashMap<CameraUpdateParameters, Object> param_map;
@@ -66,6 +67,11 @@ public class CameraUpdate extends Update
   {
     param_map.clear();
     param_map.put(CameraUpdateParameters.SECTION_SIZE, sectionSize);
+  }
+  public void setOverlapSize(int overlapSize)
+  {
+    param_map.clear();
+    param_map.put(CameraUpdateParameters.OVERLAP_SIZE, overlapSize);
   }
 
   public void setProcessImage() {
