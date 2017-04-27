@@ -23,6 +23,8 @@ import java.util.List;
  */
 public class AltUniverseThread extends Thread
 {
+  private static final int START_X = 70, START_Y = 70, START_Z = 10;
+
   private Asteroid[] lastFrame = null;
   Asteroid asteroid;
   private long previousTime = 0;
@@ -38,7 +40,7 @@ public class AltUniverseThread extends Thread
 
     while(i < numInitialAsteroids)
     {
-      asteroid = new Asteroid(new int[]{50,50,6}, 0);
+      asteroid = new Asteroid(new int[]{START_X,START_Y,START_Z}, 0);
       if((id = debrisCollection.addAsteroids(asteroid)) != -1)
       {
         asteroid.setID(id);
@@ -66,7 +68,10 @@ public class AltUniverseThread extends Thread
           //children.addAll(getAsteroidNodes());
           for (Asteroid child : lastFrame)
           {
-            child.move(1);
+            if(!child.move(1))
+            {
+              child.regenerate(new int[]{START_X, START_Y, START_Z}, 0);
+            }
             //System.out.println("In AltUniverseThread: " + child);
           }
           safeToGet = true;

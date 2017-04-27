@@ -123,7 +123,7 @@ public class Camera implements Updatable, TestableComponent {
     for(Asteroid ast : currentFrameAsteroids)
     {
       if(ast.current_location[0] > 0 && ast.current_location[1] > 0)
-      g.drawImage(ast.getImage(), ast.current_location[0]/* - ast.current_radius*/, ast.current_location[1]/* - ast.current_radius*/, ast.current_radius, ast.current_radius, null);
+      g.drawImage(ast.getRefImage(), ast.current_location[0]/* - ast.current_radius*/, ast.current_location[1]/* - ast.current_radius*/, ast.current_radius, ast.current_radius, null);
     }
 
     for(Asteroid ast : currentFrameAsteroids)

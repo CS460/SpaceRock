@@ -15,7 +15,7 @@ import java.util.Random;
 public class Asteroid
 {
   private static final int[] size_range = {10, 100};
-  private static final int[] distance_range = {100, 1000};
+  private static final int[] distance_range = {100, 1500};
   private static final int[] speed_range = {-15, 50};
   private static final String[] asteroid_images = {"asteroid_1.png", "asteroid_2.png", "asteroid_3.png",
     "asteroid_4.png", "asteroid_5.png"};
@@ -27,6 +27,7 @@ public class Asteroid
   private int size;
   private int[] trajectory;
   private int id;
+  private BufferedImage refImage = null;
   private BufferedImage image = null;
   //private HashMap<Integer, Integer[]> hist_location;
   private Image fximage;
@@ -52,9 +53,21 @@ public class Asteroid
     this.current_location = initial_location;
     this.current_radius = size / 2;
     this.created_at = elapsed_time;
-    //this.id = nextid;
+    this.id = nextid;
     nextid += 1;
     setRandomImage();
+  }
+  public void regenerate(int[] loc_constraint, int elapsed_time)
+  {
+    Random rand = new Random();
+    this.initial_location = new int[]{loc_constraint[0], loc_constraint[1], rand.nextInt(distance_range[1]) + distance_range[0]};
+    this.size = rand.nextInt(size_range[1]) + size_range[0];
+    this.trajectory = new int[]{rand.nextInt(speed_range[1]) + speed_range[0], rand.nextInt(speed_range[1]) + speed_range[0], rand.nextInt(speed_range[1]) + speed_range[0]};
+    this.current_location = initial_location;
+    this.current_radius = size / 2;
+    this.created_at = elapsed_time;
+    this.id = nextid;
+    nextid += 1;
   }
 
   public int getSize()
@@ -82,9 +95,10 @@ public class Asteroid
     return this.id;
   }
 
-  public void move(int elapsed_seconds)
+  public boolean move(int elapsed_seconds)
   {
     this.current_location = location(elapsed_seconds);
+    return (current_location[0] >= 0 && current_location[1] >= 0);
     //this.current_radius = radius(elapsed_seconds);
   }
 
@@ -104,17 +118,14 @@ public class Asteroid
     return (int) ((size / 2.0) / (location(elapsed_seconds)[2] / 100.0));
   }
 
+  public BufferedImage getRefImage()
+  {
+    return refImage;
+  }
   public BufferedImage getImage()
   {
     return image;
   }
-
-  public void setImage(BufferedImage image)
-  {
-    this.image = image;
-    this.fximage = SwingFXUtils.toFXImage(this.image, null);
-  }
-
   public Image getFXImage()
   {
     return fximage;
@@ -141,10 +152,24 @@ public class Asteroid
     System.out.format("setting imageView to: %s\n", asteroid_image);
     try
     {
-      this.image = ImageIO.read(Asteroid.class.getResource("asteroids/" + asteroid_image));
+      this.refImage = ImageIO.read(Asteroid.class.getResource("asteroids/" + asteroid_image));
+      //System.out.println("asteroids/" + asteroid_image);
+      this.fximage = SwingFXUtils.toFXImage(this.refImage,null);
     }
     catch (IOException e)
     {
     }
   }
+  public void setImage(BufferedImage image)
+  {
+    this.image = image;
+    this.fximage = SwingFXUtils.toFXImage(this.image,null);
+  }
 }
+
+
+
+
+
+
+
