@@ -31,7 +31,7 @@ public class AltUniverseThread extends Thread
 
     for(int i = 0; i < numInitialAsteroids; i++)
     {
-      lastFrame[i] = new Asteroid(new int[]{6,6,6}, 0);
+      lastFrame[i] = new Asteroid(new int[]{50,50,6}, 0);
     }
   }
 

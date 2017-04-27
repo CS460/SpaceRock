@@ -10,9 +10,9 @@ import java.util.Random;
  * Created by Sean on 2/4/17.
  */
 public class Asteroid {
-  private static final int[] size_range = {500, 4000};
+  private static final int[] size_range = {10, 100};
   private static final int[] distance_range = {100, 1000};
-  private static final int[] speed_range = {-5, 5};
+  private static final int[] speed_range = {0, 50};
   private static final String[] asteroid_images = {"asteroid_1.png", "asteroid_2.png", "asteroid_3.png",
           "asteroid_4.png", "asteroid_5.png"};
 
@@ -52,12 +52,6 @@ public class Asteroid {
     setRandomImage();
   }
 
-  public int getSize(){return this.size;}
-
-  public int[] getStartingLocation(){return initial_location;}
-
-  public int[] getTrajectory(){return trajectory;}
-
   public int getId() {
     return this.id;
   }
@@ -69,8 +63,8 @@ public class Asteroid {
 
   public int[] location(int elapsed_seconds) {
     return new int[]{current_location[0] + trajectory[0] * elapsed_seconds,
-            current_location[1] + trajectory[1] * elapsed_seconds,
-            current_location[2] + trajectory[2] * elapsed_seconds};
+                     current_location[1] + trajectory[1] * elapsed_seconds,
+                     current_location[2] + trajectory[2] * elapsed_seconds};
   }
 
   public int radius(int elapsed_seconds) {
@@ -87,14 +81,14 @@ public class Asteroid {
   @Override
   public String toString() {
     return "Asteroid{" +
-            "id=" + id +
-            ", initial_location=" + Arrays.toString(initial_location) +
-            ", size=" + size +
-            ", trajectory=" + Arrays.toString(trajectory) +
-            ", created_at=" + created_at +
-            ", current_location=" + Arrays.toString(current_location) +
-            ", current_radius=" + current_radius +
-            '}';
+        "id=" + id +
+        ", initial_location=" + Arrays.toString(initial_location) +
+        ", size=" + size +
+        ", trajectory=" + Arrays.toString(trajectory) +
+        ", created_at=" + created_at +
+        ", current_location=" + Arrays.toString(current_location) +
+        ", current_radius=" + current_radius +
+        '}';
   }
 
   private void setRandomImage() {

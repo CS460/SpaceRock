@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class SpaceRockGUI extends Application
 {
-  private static final long NANOSECS_AUTO_MODE_POLLRATE = 1_000_000_000;
+  private static final long NANOSECS_AUTO_MODE_POLLRATE = 2_000_000_000;
   private long prevTime = 0;
 
   private static final int CAMERA_ZOOM_COEF = 150;
