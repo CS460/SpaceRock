@@ -65,6 +65,7 @@ public class SpaceRockGUI extends Application
   private boolean manualAuto = true;
   private boolean prevManualAuto = true;
   private int overlap = 32;
+  private int prevOverlap = overlap;
   private int zoom = 0;
   private debrisProcessingSubsystem.cameraComponent.Camera camera;
   private OperatorTesting operator;
@@ -149,7 +150,6 @@ public class SpaceRockGUI extends Application
     this.scheduler = new Scheduler(collection, operator, camera);
     //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
     timer.start();
-
 
     view = createView();
 
@@ -414,9 +414,19 @@ public class SpaceRockGUI extends Application
         terminalString += "S> State On: " + onOff + " changed to " + !onOff + "\n";
         prevOnOff = onOff;
       }
+      if(overlap != Integer.parseInt(overlapTextField.getText()))
+      {
+        prevOverlap = overlap;
+        overlap = Integer.parseInt(overlapTextField.getText());
+        terminalString += "S> Overlap Size: " + prevOverlap + " changed to " + overlap + "\n";
+        CameraUpdate camUpdate = new CameraUpdate(UpdateType.CAMERA);
+        camUpdate.setOverlapSize(overlap);
+        scheduler.sendUpdate(camUpdate);
+      }
       onOff = ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On");
       manualAuto = ((RadioButton) modeGroup.getSelectedToggle()).getText().equals("Manual");
       zoom = (int) camZoomSlider.getValue();
+
       //zoom = (int)zoomSlider.getValue();
 
       sectorHeight = Integer.parseInt(secTextField.getText());

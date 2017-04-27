@@ -208,8 +208,8 @@ public class AltUniverseThread extends Thread
   {
     Sphere s = new Sphere(a.current_radius);
     PhongMaterial mat = new PhongMaterial(Color.BURLYWOOD);
-    s.setTranslateX(a.current_location[0]);
-    s.setTranslateY(a.current_location[1]);
+    s.setTranslateX(a.current_location[0] - (a.current_radius / 2));
+    s.setTranslateY(a.current_location[1] - (a.current_radius / 2));
     s.setMaterial(mat);
     s.setOnMouseClicked(mouseEvent ->
     {
