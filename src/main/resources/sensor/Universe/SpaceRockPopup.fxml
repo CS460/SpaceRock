@@ -81,7 +81,7 @@
             <Label fx:id="threatLevel" prefHeight="16.0" prefWidth="97.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <Label fx:id="velocity" prefHeight="16.0" prefWidth="109.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <Label fx:id="diameter" prefHeight="16.0" prefWidth="105.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="189.0" text="Request Raw Frame" translateX="13.0" translateY="-3.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+            <Button fx:id="requestFrameButton" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="23.0" prefWidth="189.0" text="Request Raw Frame" translateX="13.0" translateY="-3.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </bottom>

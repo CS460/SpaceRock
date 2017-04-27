@@ -66,7 +66,7 @@ public class Asteroid {
 
   public void move(int elapsed_seconds) {
     this.current_location = location(elapsed_seconds);
-    this.current_radius = radius(elapsed_seconds);
+    //this.current_radius = radius(elapsed_seconds);
   }
 
   public int[] location(int elapsed_seconds) {

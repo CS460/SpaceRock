@@ -5,7 +5,8 @@ import debrisProcessingSubsystem.updateSystem.DebrisCollectorUpdate;
 import debrisProcessingSubsystem.updateSystem.Updatable;
 import debrisProcessingSubsystem.updateSystem.Update;
 import debrisProcessingSubsystem.updateSystem.*;
-import sensor.*;
+import sensor.Asteroid;
+//import sensor.*;
 import java.util.*;
 
 import java.awt.image.BufferedImage;
