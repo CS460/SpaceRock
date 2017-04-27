@@ -18,6 +18,7 @@ public class ImageGenerator {
   private ArrayList<Asteroid> asteroids = new ArrayList<>();
   private Random random = new Random();
 
+  private int currentElapsedSeconds=0;
 
   public ImageGenerator() {
   }
@@ -30,6 +31,7 @@ public class ImageGenerator {
    */
   public Picture generateImage(int elapsed_seconds, ZoomLevel zoom) {
     BufferedImage image = new BufferedImage(image_size[0], image_size[1], BufferedImage.TYPE_INT_ARGB);
+    currentElapsedSeconds=elapsed_seconds;
     Graphics2D g = image.createGraphics();
     g.setColor(java.awt.Color.black);
     g.fillRect(0, 0, image.getWidth(), image.getHeight());
@@ -40,9 +42,11 @@ public class ImageGenerator {
       asteroids.add(new Asteroid(new int[]{200, 200, 1000}, 2500, new int[]{5, 5, -5}, 0));
       generateRandomAsteroids(elapsed_seconds);
     }
-
+    
+    System.out.println("working");
     // If we no longer have our max number of asteroids then generate some more
     if (asteroids.size() < MAX_ASTEROIDS) {
+      System.out.println("Generating Aseteroids");
       generateRandomAsteroids(elapsed_seconds);
     }
 
@@ -108,6 +112,9 @@ public class ImageGenerator {
       System.out.format("Removing asteroid %d\n", asteroid.getId());
       asteroids.remove(asteroid);
     }
+    
+//    System.out.println("In ImageGenerator:" + asteroids_to_be_removed.size());
+//    generateRandomAsteroids(currentElapsedSeconds);
   }
 
   private void generateRandomAsteroids(int elapsed_seconds) {
