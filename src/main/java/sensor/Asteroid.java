@@ -62,9 +62,9 @@ public class Asteroid {
   }
 
   public int[] location(int elapsed_seconds) {
-    return new int[]{initial_location[0] + trajectory[0] * (elapsed_seconds - created_at),
-                     initial_location[1] + trajectory[1] * (elapsed_seconds - created_at),
-                     initial_location[2] + trajectory[2] * (elapsed_seconds - created_at)};
+    return new int[]{current_location[0] + trajectory[0] * elapsed_seconds,
+                     current_location[1] + trajectory[1] * elapsed_seconds,
+                     current_location[2] + trajectory[2] * elapsed_seconds};
   }
 
   public int radius(int elapsed_seconds) {

@@ -8,7 +8,8 @@ import fpga.memory.MemoryMap;
 import fpga.memory.NoSuchRegisterFoundException;
 import fpga.memory.UnavailbleRegisterException;
 import fpga.objectdetection.Debris;
-import operator.commands.Asteroid;
+import sensor.Asteroid;
+import sensor.Universe.AltUniverseThread;
 import sensor.Universe.TestUniverseThread;
 import sensor.Universe.UniverseThread;
 import sensor.ZoomLevel;
@@ -36,11 +37,12 @@ public class Camera implements Updatable, TestableComponent {
   private boolean DEBUG = true;
   private CameraStatusReport cameraStatusModel;
   private MemoryMapAccessor memoryMap;
-  private UniverseThread universe;
+  //private UniverseThread universe;
+  private AltUniverseThread universe;
   private BufferedImage currentImage = null;
 
   public Camera() {
-    universe = new UniverseThread();
+    universe = new AltUniverseThread(5);
     universe.setDaemon(true);
     universe.start();
     cameraStatusModel = new CameraStatusReport();
@@ -117,7 +119,7 @@ public class Camera implements Updatable, TestableComponent {
     for(Asteroid ast : asteroids)
     {
       BufferedImage img = ast.getImage();
-      g.drawImage(img, (int)ast.getLoc().getX(), (int)ast.getLoc().getY(), (int)ast.getSize(), (int)ast.getSize(), null);
+      //g.drawImage(img, (int)ast.getLoc().getX(), (int)ast.getLoc().getY(), (int)ast.getSize(), (int)ast.getSize(), null);
     }
 
     memoryMap.takePicture();

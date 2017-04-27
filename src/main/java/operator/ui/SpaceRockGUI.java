@@ -31,6 +31,7 @@ import operator.commands.IncomingListener;
 import operator.processing.DebrisProcessor;
 import sensor.ZoomLevel;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -291,7 +292,7 @@ public class SpaceRockGUI extends Application
       CameraUpdate camUpdate = new CameraUpdate(UpdateType.CAMERA);
       camUpdate.setTakePicture();
       scheduler.sendUpdate(camUpdate);
-      camera.getCurrentImage();
+      BufferedImage asteroidImage = camera.getCurrentImage();
     });
 
     autoModeTimer = new AnimationTimer()
