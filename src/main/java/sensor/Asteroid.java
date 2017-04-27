@@ -27,6 +27,7 @@ public class Asteroid
   private int size;
   private int[] trajectory;
   private int id;
+  private int originalRad;
   private BufferedImage refImage = null;
   private BufferedImage image = null;
   //private HashMap<Integer, Integer[]> hist_location;
@@ -65,9 +66,15 @@ public class Asteroid
     this.trajectory = new int[]{rand.nextInt(speed_range[1]) + speed_range[0], rand.nextInt(speed_range[1]) + speed_range[0], rand.nextInt(speed_range[1]) + speed_range[0]};
     this.current_location = initial_location;
     this.current_radius = size / 2;
+    this.originalRad = current_radius;
     this.created_at = elapsed_time;
     this.id = nextid;
     nextid += 1;
+  }
+
+  public void setRad(int zoomFactor)
+  {
+    current_radius = originalRad * zoomFactor;
   }
 
   public int getSize()

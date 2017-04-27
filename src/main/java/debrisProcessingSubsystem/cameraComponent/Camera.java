@@ -156,6 +156,10 @@ public class Camera implements Updatable, TestableComponent {
     if(memoryMap.setZoomLevel(zoomLevel)){
       cameraStatusModel.setZoomLevel(zoomLevel);
     }
+    for(Asteroid ast: currentFrameAsteroids)
+    {
+      ast.setRad(zoomLevel.value+1);
+    }
     OperatorUpdate outgoingUpdate = new OperatorUpdate(UpdateType.OPERATOR);
     outgoingUpdate.setCameraStatus(cameraStatusModel);
   }
