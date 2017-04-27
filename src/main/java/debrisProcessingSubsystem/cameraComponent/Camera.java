@@ -46,7 +46,7 @@ public class Camera implements Updatable, TestableComponent {
   private int sectionSize = 100;
 
   public Camera() {
-    universe = new AltUniverseThread(5);
+    universe = new AltUniverseThread(10);
     universe.setDaemon(true);
     universe.start();
     cameraStatusModel = new CameraStatusReport();
