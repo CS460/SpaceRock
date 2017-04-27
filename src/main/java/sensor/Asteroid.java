@@ -15,7 +15,7 @@ import java.util.Random;
 public class Asteroid
 {
   private static final int[] size_range = {10, 100};
-  private static final int[] distance_range = {100, 1500};
+  private static final int[] distance_range = {100, 3000};
   private static final int[] speed_range = {-15, 50};
   private static final String[] asteroid_images = {"asteroid_1.png", "asteroid_2.png", "asteroid_3.png",
     "asteroid_4.png", "asteroid_5.png"};
@@ -106,14 +106,14 @@ public class Asteroid
   {
     this.current_location = location(elapsed_seconds);
     //this.current_radius = radius(elapsed_seconds);
-    return (current_location[0] >= 0 && current_location[1] >= 0);
+    return (current_location[0] >= 0 && current_location[1] >= 0 && current_location[0] < distance_range[1] && current_location[1] < distance_range[1]);
   }
 
   public int[] location(int elapsed_seconds)
   {
-    return new int[]{(current_location[0] + trajectory[0] * elapsed_seconds) % distance_range[1],
-            (current_location[1] + trajectory[1] * elapsed_seconds) % distance_range[1],
-            (current_location[2] + trajectory[2] * elapsed_seconds) % distance_range[1]};
+    return new int[]{(current_location[0] + trajectory[0] * elapsed_seconds),
+            (current_location[1] + trajectory[1] * elapsed_seconds),
+            (current_location[2])};
   }
 
   public int radius(int elapsed_seconds)

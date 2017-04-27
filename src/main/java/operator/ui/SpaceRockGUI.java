@@ -92,13 +92,23 @@ public class SpaceRockGUI extends Application
         {
           Line line = new Line(i,0,i,4000);
           line.setStrokeWidth(2);
-          line.setStroke(Color.WHITE);
-          line.setFill(Color.WHITE);
-
           Line line2 = new Line(0,i,4000,i);
           line2.setStrokeWidth(2);
-          line2.setStroke(Color.WHITE);
-          line2.setFill(Color.WHITE);
+
+          if(i % 1000 == 0)
+          {
+            line.setStroke(Color.GREEN);
+            line.setFill(Color.GREEN);
+            line2.setStroke(Color.GREEN);
+            line2.setFill(Color.GREEN);
+          }
+          else
+          {
+            line.setStroke(Color.WHITE);
+            line.setFill(Color.WHITE);
+            line2.setStroke(Color.WHITE);
+            line2.setFill(Color.WHITE);
+          }
           rockGroup.getChildren().addAll(line,line2);
         }
 

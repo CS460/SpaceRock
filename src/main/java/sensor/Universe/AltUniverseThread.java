@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class AltUniverseThread extends Thread
 {
-  private static final int START_X = 100, START_Y = 100, START_Z = 10;
+  private static final int START_X = 200, START_Y = 200, START_Z = 100;
 
   private Asteroid[] lastFrame = null;
   Asteroid asteroid;
