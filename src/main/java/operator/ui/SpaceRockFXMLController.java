@@ -3,10 +3,11 @@ package operator.ui;/*
  */
 
 
-import operator.commands.Asteroid;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import sensor.Asteroid;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -38,12 +39,12 @@ public class SpaceRockFXMLController implements Initializable {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public void setData(Asteroid asteroid) {
-        this.size = asteroid.size;
-        this.ID = asteroid.id;
-        this.timestamp = asteroid.timestamp;
+        this.size = asteroid.current_radius;
+        this.ID = asteroid.getId();
+        //this.timestamp = asteroid.timestamp;
         diameter.setText("" + Math.round(size));
         objectID.setText("" + ID);
-        timeCaptured.setText("Timestamp: " + timestamp.toString());
+        //timeCaptured.setText("Timestamp: " + timestamp.toString());
     }
     
     @Override

@@ -10,9 +10,9 @@ import java.util.Random;
  * Created by Sean on 2/4/17.
  */
 public class Asteroid {
-  private static final int[] size_range = {500, 4000};
+  private static final int[] size_range = {10, 100};
   private static final int[] distance_range = {100, 1000};
-  private static final int[] speed_range = {-5, 5};
+  private static final int[] speed_range = {0, 50};
   private static final String[] asteroid_images = {"asteroid_1.png", "asteroid_2.png", "asteroid_3.png",
           "asteroid_4.png", "asteroid_5.png"};
 

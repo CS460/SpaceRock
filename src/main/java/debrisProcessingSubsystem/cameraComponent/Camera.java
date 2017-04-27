@@ -8,6 +8,7 @@ import fpga.memory.MemoryMap;
 import fpga.memory.NoSuchRegisterFoundException;
 import fpga.memory.UnavailbleRegisterException;
 import fpga.objectdetection.Debris;
+import javafx.scene.Node;
 import sensor.Asteroid;
 import sensor.Universe.AltUniverseThread;
 import sensor.Universe.TestUniverseThread;
@@ -40,6 +41,7 @@ public class Camera implements Updatable, TestableComponent {
   //private UniverseThread universe;
   private AltUniverseThread universe;
   private BufferedImage currentImage = null;
+  private Asteroid[] currentFrameAsteroids;
 
   public Camera() {
     universe = new AltUniverseThread(5);
@@ -98,7 +100,7 @@ public class Camera implements Updatable, TestableComponent {
   /**
    * Tell camera to take a picture.
    */
-  private BufferedImage takePicture()
+  private void takePicture()
   {
     //@author Denver
 
@@ -109,21 +111,20 @@ public class Camera implements Updatable, TestableComponent {
     //this also means determining the raw image that we should be sending to the debris collection for each asteroid
     //shouldn't be too hard - just calculate the "box" it should be in based on section sizes, and grab that box
     //from the camera's overall saved image view
-    Asteroid[] asteroids = universe.getAsteroids();
+    currentFrameAsteroids = universe.getAsteroids();
 
     BufferedImage image = new BufferedImage(4000, 4000, BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = image.createGraphics();
     g.setColor(java.awt.Color.black);
     g.fillRect(0, 0, image.getWidth(), image.getHeight());
 
-    for(Asteroid ast : asteroids)
+    for(Asteroid ast : currentFrameAsteroids)
     {
-      BufferedImage img = ast.getImage();
-      //g.drawImage(img, (int)ast.getLoc().getX(), (int)ast.getLoc().getY(), (int)ast.getSize(), (int)ast.getSize(), null);
+      g.drawImage(ast.getImage(), ast.current_location[0] - ast.current_radius, ast.current_location[1] - ast.current_radius, ast.current_radius, ast.current_radius, null);
     }
 
     memoryMap.takePicture();
-    return image;
+    currentImage = image;
   }
 
   /* Raw frame will be returned with every debris object.
@@ -187,7 +188,7 @@ public class Camera implements Updatable, TestableComponent {
           if (DEBUG) System.out.println("Received RESET_CAMERA update.");
           break;
         case TAKE_PICTURE:
-          currentImage = takePicture();
+          takePicture();
           if (DEBUG) System.out.println("Received TAKE_PICTURE update.");
           break;
         case SET_ZOOM:
@@ -239,6 +240,10 @@ public class Camera implements Updatable, TestableComponent {
    */
   public void addDebrisRecord(DebrisRecord update){
     memoryMap.addDebrisToRegister(update);
+  }
+  public List<Node> getAsteroidNodes()
+  {
+    return universe.getAsteroidNodes();
   }
 
 }

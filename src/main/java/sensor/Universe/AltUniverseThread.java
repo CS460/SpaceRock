@@ -1,6 +1,18 @@
 package sensor.Universe;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Sphere;
+import javafx.stage.Stage;
 import sensor.Asteroid;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -33,7 +45,7 @@ public class AltUniverseThread extends Thread
       while (true)
       {
         long currentTime = System.currentTimeMillis();
-        if(currentTime - previousTime > 1000)
+        if(currentTime - previousTime > 500)
         {
           safeToGet = false;
           previousTime = currentTime;
@@ -42,7 +54,7 @@ public class AltUniverseThread extends Thread
           for (Asteroid child : lastFrame)
           {
             child.move(1);
-            System.out.println("In UniverseThread: " + child);
+            System.out.println("In AltUniverseThread: " + child);
           }
           safeToGet = true;
         }
@@ -156,4 +168,54 @@ public class AltUniverseThread extends Thread
     System.out.println("Got new image!");
   }
   */
+  public List<Node> getAsteroidNodes()
+  {
+    List<Node> nodeList = new ArrayList<>(lastFrame.length * 2);
+    for (Asteroid a : lastFrame)
+    {
+      Sphere sphere = makeAsteroidSphere(a);
+      nodeList.add(sphere);
+    }
+    return nodeList;
+  }
+/*
+  /**
+   * Make a Sphere representing some Asteroid
+   *
+   * @param a Asteroid to use as a basis
+   * @return a Sphere with the asteroid's ID drawn on it
+   */
+
+  private Sphere makeAsteroidSphere(Asteroid a)
+  {
+    Sphere s = new Sphere(a.current_radius);
+    PhongMaterial mat = new PhongMaterial(Color.BURLYWOOD);
+    s.setTranslateX(a.current_location[0]);
+    s.setTranslateY(a.current_location[1]);
+    s.setMaterial(mat);
+    s.setOnMouseClicked(mouseEvent ->
+    {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("SpaceRockPopup.fxml"));
+      Scene newScene;
+      Parent root;
+      try
+      {
+        root = loader.load();
+        newScene = new Scene(root);
+      }
+      catch (IOException ex)
+      {
+        // TODO: handle error
+        return;
+      }
+      SpaceRockFXMLController controller = loader.getController();
+
+      controller.setData(a);
+      Stage inputStage = new Stage();
+      inputStage.setScene(newScene);
+      inputStage.show();
+
+    });
+    return s;
+  }
 }

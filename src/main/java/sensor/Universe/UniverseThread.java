@@ -146,7 +146,7 @@ public class UniverseThread extends Thread implements IncomingListener
       }
       SpaceRockFXMLController controller = loader.getController();
 
-      controller.setData(a);
+     // controller.setData(a);
       Stage inputStage = new Stage();
       inputStage.setScene(newScene);
       inputStage.show();

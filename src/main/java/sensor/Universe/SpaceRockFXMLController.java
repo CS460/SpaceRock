@@ -3,7 +3,6 @@ package sensor.Universe;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import operator.commands.Asteroid;
 
 import java.net.URL;
 import java.time.Instant;
@@ -36,13 +35,13 @@ public class SpaceRockFXMLController implements Initializable
   private Instant timestamp;
   private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-  public void setData(Asteroid asteroid) {
-    this.size = asteroid.size;
-    this.ID = asteroid.id;
-    this.timestamp = asteroid.timestamp;
+  public void setData(sensor.Asteroid asteroid) {
+    this.size = asteroid.current_radius;
+    this.ID = asteroid.getId();
+    //this.timestamp = asteroid.timestamp;
     diameter.setText("" + Math.round(size));
     objectID.setText("" + ID);
-    timeCaptured.setText("Timestamp: " + timestamp.toString());
+    //timeCaptured.setText("Timestamp: " + timestamp.toString());
   }
 
   @Override

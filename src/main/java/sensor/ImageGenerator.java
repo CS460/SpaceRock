@@ -146,7 +146,7 @@ public class ImageGenerator {
    * @return entire imageView
    */
 
-  private void drawAsteroidToImage(BufferedImage image, Asteroid asteroid) {
+  public void drawAsteroidToImage(BufferedImage image, Asteroid asteroid) {
     if (asteroid.current_location[2] <= 0) {
       System.out.format("Asteroid %d is now behind us.\n", asteroid.getId());
       return;

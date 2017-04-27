@@ -10,6 +10,7 @@ import debrisProcessingSubsystem.updateSystem.UpdateType;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.*;
@@ -69,6 +70,23 @@ public class SpaceRockGUI extends Application
   private int previousZoomLevel = 0;
   private AnimationTimer autoModeTimer;
   private SubScene view;
+  private volatile boolean newData = false;
+
+  private AnimationTimer timer = new AnimationTimer()
+  {
+    @Override
+    public void handle(long now)
+    {
+      if (newData)
+      {
+        ObservableList<Node> children = rockGroup.getChildren();
+        children.clear();
+        children.add(viewCamera);
+        children.addAll(camera.getAsteroidNodes());
+        newData = false;
+      }
+    }
+  };
 
   public static void main(String[] args)
   {
@@ -85,6 +103,7 @@ public class SpaceRockGUI extends Application
 
     this.scheduler = new Scheduler(collection, operator, camera);
     //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
+    timer.start();
 
     view = createView();
     //timer.start();
@@ -292,7 +311,8 @@ public class SpaceRockGUI extends Application
       CameraUpdate camUpdate = new CameraUpdate(UpdateType.CAMERA);
       camUpdate.setTakePicture();
       scheduler.sendUpdate(camUpdate);
-      BufferedImage asteroidImage = camera.getCurrentImage();
+      newData = true;
+     // BufferedImage asteroidImage = camera.getCurrentImage();
     });
 
     autoModeTimer = new AnimationTimer()
@@ -305,6 +325,7 @@ public class SpaceRockGUI extends Application
           CameraUpdate camUpdate = new CameraUpdate(UpdateType.CAMERA);
           camUpdate.setTakePicture();
           scheduler.sendUpdate(camUpdate);
+          newData = true;
 
           prevTime = now;
         }
