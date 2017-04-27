@@ -394,6 +394,9 @@ public class SpaceRockGUI extends Application
       if(sectorHeight != sectorWidth)
       {
         terminalString += "S> Section Size: " + sectorWidth + " changed to " + sectorHeight + "\n";
+        CameraUpdate camupdate = new CameraUpdate(UpdateType.CAMERA);
+        camupdate.setSectionSize(sectorHeight);
+        scheduler.sendUpdate(camupdate);
       }
       sectorWidth = Integer.parseInt(secTextField.getText());
       if(!onOff) { viewCamera.setTranslateZ(500); }
