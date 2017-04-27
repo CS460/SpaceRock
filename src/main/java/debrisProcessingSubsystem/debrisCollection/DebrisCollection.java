@@ -27,6 +27,7 @@ public class DebrisCollection implements Updatable, TestableComponent
     private DebrisList newDebris, oldDebris;
     private LinkedList<Update> outgoingUpdates;
     private List<Asteroid> asteroids = new ArrayList<>();
+    private int currentID = -1;
     private boolean DEBUG = true;
 
     /**
@@ -110,12 +111,15 @@ public class DebrisCollection implements Updatable, TestableComponent
         return null;
     }
 
-    private void addAsteroids(Asteroid asteroid)
+    public int addAsteroids(Asteroid asteroid)
     {
       if(!checkForAsteroidMatch(asteroid))
       {
         asteroids.add(asteroid);
+        currentID++;
+        return currentID;
       }
+      return -1;
     }
 
     private boolean checkForAsteroidMatch(Asteroid asteroid)
@@ -126,7 +130,7 @@ public class DebrisCollection implements Updatable, TestableComponent
         if(ast.getSize() == asteroid.getSize()) similar++;
         if(ast.getStartingLocation()[0] == asteroid.getStartingLocation()[0]) similar++;
         if(ast.getTrajectory()[1]==asteroid.getTrajectory()[1]) similar++;
-        if(similar >= 2)
+        if(similar == 3)
         {
           System.out.println("Asteroid already found!");
           return true;

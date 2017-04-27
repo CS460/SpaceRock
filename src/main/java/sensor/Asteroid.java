@@ -35,12 +35,14 @@ public class Asteroid {
 
   public int[] getTrajectory(){return trajectory;}
 
+  public void setID(int id){this.id = id;}
+
   public Asteroid(int[] initial_location, int size, int[] trajectory, int elapsed_time) {
     this.initial_location = initial_location;
     this.size = size;
     this.trajectory = trajectory;
     this.created_at = elapsed_time;
-    this.id = nextid;
+    //this.id = nextid;
     nextid += 1;
     setRandomImage();
   }
@@ -53,7 +55,7 @@ public class Asteroid {
     this.current_location = initial_location;
     this.current_radius = size / 2;
     this.created_at = elapsed_time;
-    this.id = nextid;
+    //this.id = nextid;
     nextid += 1;
     setRandomImage();
   }

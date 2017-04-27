@@ -1,5 +1,6 @@
 package sensor.Universe;
 
+import debrisProcessingSubsystem.debrisCollection.DebrisCollection;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -21,7 +22,11 @@ import java.util.List;
 public class AltUniverseThread extends Thread
 {
   private Asteroid[] lastFrame = null;
+  Asteroid asteroid;
   private long previousTime = 0;
+  private int i = 0;
+  int id;
+  private DebrisCollection debrisCollection = new DebrisCollection();
 
   private volatile boolean safeToGet = true; //thread safety measure
 
@@ -29,9 +34,15 @@ public class AltUniverseThread extends Thread
   {
     lastFrame = new Asteroid[numInitialAsteroids];
 
-    for(int i = 0; i < numInitialAsteroids; i++)
+    while(i < numInitialAsteroids)
     {
-      lastFrame[i] = new Asteroid(new int[]{50,50,6}, 0);
+      asteroid = new Asteroid(new int[]{50,50,6}, 0);
+      if((id = debrisCollection.addAsteroids(asteroid)) != -1)
+      {
+        asteroid.setID(id);
+        lastFrame[i] = asteroid;
+        i++;
+      }
     }
   }
 
