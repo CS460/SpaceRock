@@ -213,7 +213,7 @@ public class AltUniverseThread extends Thread
     s.setMaterial(mat);
     s.setOnMouseClicked(mouseEvent ->
     {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("SpaceRockPopup.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("sensor/Universe/SpaceRockPopup.fxml"));
       Scene newScene;
       Parent root;
       try

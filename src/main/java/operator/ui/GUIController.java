@@ -1,6 +1,5 @@
 package operator.ui;
 
-
 import debrisProcessingSubsystem.Scheduler;
 import debrisProcessingSubsystem.cameraComponent.Camera;
 import debrisProcessingSubsystem.debrisCollection.DebrisCollection;
@@ -8,19 +7,18 @@ import debrisProcessingSubsystem.operatorComponent.OperatorTesting;
 import debrisProcessingSubsystem.updateSystem.CameraUpdate;
 import debrisProcessingSubsystem.updateSystem.UpdateType;
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.*;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.PerspectiveCamera;
+import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Line;
@@ -29,25 +27,67 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import sensor.ZoomLevel;
 
-/**
- * @author Sahba and Kathrina
- */
-public class SpaceRockGUI extends Application {
-  private static final boolean TESTING_FRAME_BOUNDARIES = true;
+import java.net.URL;
+import java.util.ResourceBundle;
 
+public class GUIController implements Initializable {
+  private static final boolean TESTING_FRAME_BOUNDARIES = true;
   private static final long NANOSECS_AUTO_MODE_POLLRATE = 2_000_000_000;
   private static final int CAMERA_ZOOM_COEF = 150;
   private static final int MAIN_PANE_H = 400;
   private static final double MAIN_PANE_W = 600;
+  @FXML
+  BorderPane borderPane;
+  @FXML
+  ToggleGroup modeGroup;
+  @FXML
+  ToggleGroup onOffGroup;
+  @FXML
+  RadioButton autoMode;
+  @FXML
+  RadioButton cameraOff;
+  @FXML
+  RadioButton cameraOn;
+  @FXML
+  RadioButton manualMode;
+  @FXML
+  Slider zoomSlider;
+  @FXML
+  Slider camZoomSlider;
+  @FXML
+  SubScene view;
+  @FXML
+  TextField secTextField;
+  @FXML
+  TextField overlapTextField;
+  @FXML
+  TextArea terminalText;
+  @FXML
+  Button upButton;
+  @FXML
+  Button downButton;
+  @FXML
+  Button leftButton;
+  @FXML
+  Button rightButton;
+  @FXML
+  Button takePicture;
+  @FXML
+  Button submitButton;
+  @FXML
+  Button clearButton;
+  @FXML
+  Button resetButton;
+  @FXML
+  Button statusButton;
+  private Stage primaryStage;
   private long prevTime = 0;
   private int sectorWidth = 100;
   private int sectorHeight = 100;
-  private TextArea terminalText;
   private PerspectiveCamera viewCamera;
   private Group rockGroup = new Group();
   private double x0 = 0;
   private double y0 = 0;
-  private Slider zoomSlider = new Slider(-5, 5, 0);
   private boolean onOff = false;
   private boolean prevOnOff = false;
   private boolean manualAuto = true;
@@ -61,7 +101,6 @@ public class SpaceRockGUI extends Application {
   private Scheduler scheduler;
   private int previousZoomLevel = 0;
   private AnimationTimer autoModeTimer;
-  private SubScene view;
   private volatile boolean newData = false;
   private double navButtonSensitivity = 50;
 
@@ -119,43 +158,26 @@ public class SpaceRockGUI extends Application {
     }
   };
 
-  public static void main(String[] args)
+  void setStage(Stage stage)
   {
-    launch(args);
+    this.primaryStage = stage;
   }
 
-
-  @Override
-  public void start(Stage stage) throws Exception
+  private void createView()
   {
-    this.camera = new Camera();
-    this.operator = new OperatorTesting();
-    this.collection = new DebrisCollection();
+    viewCamera = new PerspectiveCamera(false);
+    rockGroup.getChildren().add(viewCamera);
 
-    this.scheduler = new Scheduler(collection, operator, camera);
-    //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
-    timer.start();
+    view.setRoot(rockGroup);
+    view.setFill(Color.BLACK);
+    view.setCamera(viewCamera);
 
-    view = createView();
+    viewCamera.setTranslateZ(-500);
+    setViewListeners();
+  }
 
-    //@Austin, added to make the top right coordinates of the camera (0,0) on the plane
-    viewCamera.setTranslateX(197);
-    viewCamera.setTranslateY(130);
-    //timer.start();
-    BorderPane mainPane = new BorderPane(view);
-    mainPane.setMaxHeight(600);
-    mainPane.setMaxWidth(800);
-    mainPane.setPadding(new Insets(0, 10, 10, 10));
-
-    mainPane.setRight(createRightPane());
-    mainPane.setBottom(createButton());
-    Scene scene = new Scene(mainPane);
-    stage.setScene(scene);
-    stage.setTitle("Space Rock Control Center");
-    stage.setResizable(false);
-
-    //set textarea here
-
+  private void setViewListeners()
+  {
     view.setOnScroll((ScrollEvent event) ->
     {
       double cameraX = viewCamera.getTranslateX();
@@ -195,92 +217,11 @@ public class SpaceRockGUI extends Application {
         viewCamera.setTranslateY(yTranslation);
         y0 = e.getY();
       }
-
     });
-
-
-    stage.show();
   }
 
-
-  private Node createRightPane()
+  private void formatCamZoomLabels()
   {
-    /*Terminal design section-- design status labels, console and button*/
-    VBox connectionStatusVbox = new VBox(10);
-
-    connectionStatusVbox.setPadding(new Insets(0, 5, 0, 0));
-    Label statusLabel = new Label("               Connection Status    ");
-    statusLabel
-      .setStyle("-fx-font-size: 14pt; -fx-font-family: calibri; -fx-font-weight: bold");
-    Button statusButton = new Button("Active");
-
-
-    BorderPane statusBox = new BorderPane();
-    statusBox.setCenter(statusButton);
-    statusButton.setStyle("-fx-background-color: #1ccc31;-fx-font-size:large");
-
-    HBox labelBox = new HBox();
-    HBox indicatorBox = new HBox();
-    indicatorBox.setPadding(new Insets(0, 0, 0, 100));
-    HBox terminalBox = new HBox();
-    HBox buttonBox = new HBox();
-    buttonBox.setPadding(new Insets(0, 100, 0, 85));
-
-    terminalText = new TextArea("$>System Initialized\n");
-    terminalText.setPrefColumnCount(20);
-    terminalText.setPrefRowCount(10);
-    terminalText.setEditable(false);
-
-    Button clearButton = new Button("Clear Terminal");
-    clearButton.setOnAction(event -> terminalText.setText("$>"));
-
-
-    labelBox.getChildren().addAll(statusLabel);
-    labelBox.setStyle("-fx-border-color: black");
-
-    indicatorBox.getChildren().add(statusButton);
-    terminalBox.getChildren().addAll(terminalText);
-    buttonBox.getChildren().addAll(clearButton);
-
-    connectionStatusVbox.getChildren().addAll(labelBox, indicatorBox, terminalBox, buttonBox);
-
-
-
-
-    /* camera controls section*/
-    VBox camLabelsVbox = new VBox(10);
-    VBox box = new VBox(10);
-    box.setPadding(new Insets(5, 5, 5, 5));
-
-
-    Label camControlLabel = new Label("  Camera Controls  ");
-
-    HBox camLabelBox = new HBox();
-    camLabelBox.setStyle("-fx-border-color: black");
-    camLabelBox.setPadding(new Insets(0, 0, 5, 55));
-
-    camControlLabel
-      .setStyle("-fx-font-size: 14pt; -fx-font-family: calibri; -fx-font-weight: bold");
-    camLabelBox.getChildren().add(camControlLabel);
-    Label imgDetailLabel = new Label("Image Details ");
-    imgDetailLabel.setUnderline(true);
-    imgDetailLabel
-      .setStyle("-fx-font-size: 11pt; -fx-font-family: calibri; -fx-font-weight: bold");
-    HBox camZoomBox = new HBox(5);
-    HBox secOverlapBox = new HBox(5);
-    HBox secSizeBox = new HBox(5);
-    VBox imgDetailBox = new VBox(5);
-    imgDetailBox.setPadding(new Insets(10, 5, 5, 15));
-
-    Label camZoomLabel = new Label("Zoom");
-    camZoomLabel.setStyle("-fx-font-size:9pt");
-
-    Slider camZoomSlider = new Slider(0, 3, 0);
-    camZoomSlider.setShowTickLabels(true);
-    camZoomSlider.setShowTickMarks(true);
-    camZoomSlider.setMajorTickUnit(1);
-    camZoomSlider.setMinorTickCount(0);
-    camZoomSlider.setSnapToTicks(true);
     camZoomSlider.setLabelFormatter(new StringConverter<Double>() {
       @Override
       public String toString(Double n)
@@ -310,54 +251,14 @@ public class SpaceRockGUI extends Application {
         }
       }
     });
+  }
 
-    Label overlapLabel = new Label("Section Overlap");
-    overlapLabel.setStyle("-fx-font-size:9pt");
-    TextField overlapTextField = new TextField();
-    overlapTextField.setPrefWidth(50);
-    overlapTextField.setText("32");
+  void setButtonListeners()
+  {
+    // Listener for the "Clear Terminal" Button
+    clearButton.setOnAction(event -> terminalText.setText("\\$>"));
 
-    Label pxLabel = new Label("px");
-    Label pxLabel2 = new Label("px");
-    Label secSizeLabel = new Label("Section Size");
-    secSizeLabel.setStyle("-fx-font-size:9pt");
-
-    TextField secTextField = new TextField();
-    secTextField.setPrefWidth(50);
-    secTextField.setText("100");
-    secSizeLabel.setPadding(new Insets(0, 0, 20, 0));
-
-
-    camZoomBox.getChildren().addAll(camZoomLabel, camZoomSlider);
-    secOverlapBox.getChildren().addAll(overlapLabel, overlapTextField, pxLabel);
-    secSizeBox.getChildren().addAll(secSizeLabel, secTextField, pxLabel2);
-    imgDetailBox.getChildren().addAll(camZoomBox, secOverlapBox, secSizeBox);
-
-    ////////////////////////////////
-    Label modeLabel = new Label("Image Capture Mode:");
-    modeLabel.setStyle("-fx-font-size: 11pt; -fx-font-family: calibri; -fx-font-weight: bold");
-    modeLabel.setUnderline(true);
-        /* style radio buttons*/
-    ToggleGroup modeGroup = new ToggleGroup();
-    RadioButton autoMode = new RadioButton("Automatic");
-    autoMode.setStyle("-fx-font-size:9pt");
-    RadioButton manualMode = new RadioButton("Manual");
-    manualMode.setStyle("-fx-font-size:9pt");
-    autoMode.setSelected(true);
-    modeGroup.getToggles().addAll(autoMode, manualMode);
-
-    Label onOffLabel = new Label("Camera On/Off:");
-    onOffLabel.setStyle("-fx-font-size: 11pt; -fx-font-family: calibri; -fx-font-weight: bold");
-    onOffLabel.setUnderline(true);
-    ToggleGroup onOffGroup = new ToggleGroup();
-    RadioButton cameraOn = new RadioButton("On");
-    cameraOn.setStyle("-fx-font-size:9pt");
-    RadioButton cameraOff = new RadioButton("Off");
-    cameraOff.setStyle("-fx-font-size:9pt");
-    cameraOff.setSelected(true);
-    onOffGroup.getToggles().addAll(cameraOn, cameraOff);
-
-    Button takePicture = new Button("Take Picture");
+    // Listener for the "Take Picture" Button
     takePicture.setDisable(true);
     takePicture.setOnAction(e ->
     {
@@ -365,7 +266,6 @@ public class SpaceRockGUI extends Application {
       camUpdate.setTakePicture();
       scheduler.sendUpdate(camUpdate);
       newData = true;
-      // BufferedImage asteroidImage = camera.getCurrentImage();
     });
 
     autoModeTimer = new AnimationTimer() {
@@ -384,20 +284,18 @@ public class SpaceRockGUI extends Application {
       }
     };
 
-    HBox modeBox = new HBox();
-    modeBox.setPadding(new Insets(5, 5, 5, 90));
-    Button modeSubmitButton = new Button("submit");
-    modeSubmitButton.setOnAction(e ->
+    // Listener for "Submit" button - includes hooks to the entire right pane
+    submitButton.setOnAction(e ->
     {
       String terminalString = "";
       if (onOff != ((RadioButton) onOffGroup.getSelectedToggle()).getText().equals("On")) {
-        terminalString += "S> State On: " + onOff + " changed to " + !onOff + "\n";
+        terminalString += "\\$> State On: " + onOff + " changed to " + !onOff + "\n";
         prevOnOff = onOff;
       }
       if (overlap != Integer.parseInt(overlapTextField.getText())) {
         prevOverlap = overlap;
         overlap = Integer.parseInt(overlapTextField.getText());
-        terminalString += "S> Overlap Size: " + prevOverlap + " changed to " + overlap + "\n";
+        terminalString += "\\$> Overlap Size: " + prevOverlap + " changed to " + overlap + "\n";
         CameraUpdate camUpdate = new CameraUpdate(UpdateType.CAMERA);
         camUpdate.setOverlapSize(overlap);
         scheduler.sendUpdate(camUpdate);
@@ -410,13 +308,17 @@ public class SpaceRockGUI extends Application {
 
       sectorHeight = Integer.parseInt(secTextField.getText());
       if (sectorHeight != sectorWidth) {
-        terminalString += "S> Section Size: " + sectorWidth + " changed to " + sectorHeight + "\n";
+        terminalString += "\\$> Section Size: " + sectorWidth + " changed to " + sectorHeight + "\n";
         CameraUpdate camupdate = new CameraUpdate(UpdateType.CAMERA);
         camupdate.setSectionSize(sectorHeight);
         scheduler.sendUpdate(camupdate);
       }
       sectorWidth = Integer.parseInt(secTextField.getText());
-      if (!onOff) { viewCamera.setTranslateZ(500); } else { viewCamera.setTranslateZ(-500); }
+      if (!onOff) {
+        viewCamera.setTranslateZ(500);
+      } else {
+        viewCamera.setTranslateZ(-500);
+      }
       takePicture.setDisable(!manualAuto || !onOff);
 
       System.out.println("GUI transmitted:\n\tZoom Level: " + zoom + "\n\tSection size: " + secTextField.getText() +
@@ -424,12 +326,12 @@ public class SpaceRockGUI extends Application {
 
       //if the zoom has changed
       if (zoom != previousZoomLevel) {
-        terminalString += "S> Zoom level: " + previousZoomLevel + " changed to " + zoom + "\n";
+        terminalString += "\\$> Zoom level: " + previousZoomLevel + " changed to " + zoom + "\n";
         notifySchedulerOfZoom(zoom);
       }
       //now changed to automatic mode from manual mode, or we just turned on from previously being off
       if (manualAuto != prevManualAuto || (onOff && !prevOnOff)) {
-        terminalString += "S> Automatic Mode: " + !prevManualAuto + " changed to " + !manualAuto + "\n";
+        terminalString += "\\$> Automatic Mode: " + !prevManualAuto + " changed to " + !manualAuto + "\n";
         prevManualAuto = manualAuto;
 
         //if not manual mode, and the system is on
@@ -448,8 +350,8 @@ public class SpaceRockGUI extends Application {
       terminalText.setText(terminalString);
     });
 
-    Button modeResetButton = new Button("reset");
-    modeResetButton.setOnAction(event ->
+    // Listener for "Reset" button
+    resetButton.setOnAction(event ->
     {
       manualAuto = true;
       overlap = 32;
@@ -470,70 +372,9 @@ public class SpaceRockGUI extends Application {
 
       terminalText.setText("S> System Reset");
     });
-
-    modeBox.getChildren().addAll(modeSubmitButton, modeResetButton);
-
-
-    VBox modeVbox = new VBox(5);
-    modeVbox.setPadding(new Insets(0, 5, 5, 15));
-    modeVbox.getChildren().addAll(modeLabel, autoMode, manualMode, takePicture, onOffLabel, cameraOn, cameraOff, modeBox);
-    ////////////////////////
-
-
-    // add all components to right pane
-    //box.setMaxWidth(275);
-    camLabelsVbox.getChildren().addAll(imgDetailLabel, imgDetailBox);
-    box.getChildren()
-      .addAll(connectionStatusVbox, camLabelBox, camLabelsVbox, modeVbox);
-    box.setStyle("-fx-border-color: black");
-
-
-    box.setPrefHeight(600);
-    return box;
   }
 
-
-  private Node createButton()
-  {
-    GridPane gridPane = new GridPane();
-    gridPane.setHgap(0);
-    gridPane.setVgap(0);
-    gridPane.setGridLinesVisible(false);
-    //gridPane.setGridLinesVisible(true);
-    gridPane.setPadding(new Insets(0, 0, 0, 150));
-
-
-    /////////////////////////////frame zoom links here/////////////
-    VBox framePanelVBox = new VBox(5);
-    HBox framePanelHBox = new HBox(25);
-    Label gridLabel = new Label("Frame Controls");
-    gridLabel.setStyle("-fx-font-size: 14pt; -fx-font-family: calibri; -fx-font-weight: bold");
-    HBox frameZoomBox = new HBox();
-    frameZoomBox.setAlignment(Pos.CENTER);
-    HBox frameZoomElements = new HBox();
-    Label zoomLabel = new Label("Frame Zoom:");
-    zoomLabel.setStyle("-fx-font-size: 9pt; ");
-
-    zoomSlider.setShowTickLabels(true);
-    zoomSlider.setShowTickMarks(true);
-    zoomSlider.setMajorTickUnit(1);
-    zoomSlider.setMinorTickCount(1);
-
-    //create buttons and add to grid pane
-    GridPane frameButtons = new GridPane();
-    Button upButton = new Button("Up");
-    Button downButton = new Button("Down");
-    Button leftButton = new Button("Left");
-    Button rightButton = new Button("Right");
-    rightButton.setPrefWidth(55);
-    upButton.setPrefWidth(55);
-    downButton.setPrefWidth(55);
-    leftButton.setPrefWidth(55);
-    leftButton.setStyle("-fx-font-size:8pt");
-    upButton.setStyle("-fx-font-size:8pt");
-    downButton.setStyle("-fx-font-size:8pt");
-    rightButton.setStyle("-fx-font-size:8pt");
-
+  void setArrowListeners() {
     upButton.setOnAction(event -> {
       double yTranslation = viewCamera.getTranslateY() - navButtonSensitivity;
       double sliderVal = zoomSlider.getValue();
@@ -562,44 +403,14 @@ public class SpaceRockGUI extends Application {
       if (xTranslation <= (3203 + 54 * sliderVal)) {
         viewCamera.setTranslateX(xTranslation);
       }
-
     });
-
-    frameButtons.add(upButton, 2, 1);
-    frameButtons.add(downButton, 2, 3);
-    frameButtons.add(rightButton, 3, 2);
-    frameButtons.add(leftButton, 1, 2);
-    frameButtons.setPadding(new Insets(1, 1, 1, 1));
-
-
-    frameZoomElements.getChildren().addAll(zoomLabel, zoomSlider);
-    framePanelHBox.getChildren().addAll(frameZoomElements, frameButtons);
-    framePanelHBox.setPadding(new Insets(0, 0, 40, 0)); //padding from screen bottom
-    framePanelVBox.getChildren().addAll(gridLabel, framePanelHBox);
-    frameZoomBox.getChildren().addAll(framePanelVBox);
-    gridPane.add(frameZoomBox, 1, 1);
-    gridPane.setStyle("-fx-border-color: black");
-    zoomSlider.valueProperty().addListener(
-
-      (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-        viewCamera.setTranslateZ(viewCamera.getTranslateZ() +
-          (newValue.doubleValue() - oldValue.doubleValue()) *
-            CAMERA_ZOOM_COEF));
-    return gridPane;
   }
 
-
-  private SubScene createView()
-  {
-    viewCamera = new PerspectiveCamera(false);
-    rockGroup.getChildren().add(viewCamera);
-
-    SubScene scene = new SubScene(rockGroup, MAIN_PANE_W, MAIN_PANE_H);
-    scene.setFill(Color.BLACK);
-    scene.setCamera(viewCamera);
-
-    viewCamera.setTranslateZ(-500);
-    return scene;
+  void setZoomSliderListener() {
+    zoomSlider.valueProperty().addListener(
+      (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
+        viewCamera.setTranslateZ(viewCamera.getTranslateZ() + (newValue.doubleValue() - oldValue.doubleValue()) * CAMERA_ZOOM_COEF)
+    );
   }
 
   //indicates to the scheduler that it should update the camera with an update (zoom in this case)
@@ -622,5 +433,27 @@ public class SpaceRockGUI extends Application {
         break;
     }
     scheduler.sendUpdate(cameraUpdate);
+  }
+
+  BorderPane getRoot() {
+    return this.borderPane;
+  }
+
+  @Override
+  public void initialize(URL location, ResourceBundle resources)
+  {
+    this.camera = new Camera();
+    this.operator = new OperatorTesting();
+    this.collection = new DebrisCollection();
+    this.scheduler = new Scheduler(collection, operator, camera);
+    //this starts the constant polling of the scheduler over the debriscollection, operator, and camera
+    timer.start();
+
+    createView();
+    viewCamera.setTranslateX(197);
+    viewCamera.setTranslateY(130);
+    formatCamZoomLabels();
+    setButtonListeners();
+    setArrowListeners();
   }
 }
