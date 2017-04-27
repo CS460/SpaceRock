@@ -1,5 +1,6 @@
 package debrisProcessingSubsystem.debrisCollection;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -77,5 +78,20 @@ public class DRList implements DebrisList {
      */
     public boolean isEmpty(){
         return debrisList == null || debrisList.isEmpty();
+    }
+
+    public BufferedImage getDebrisById(String id)
+    {
+      Iterator i = debrisList.iterator();
+
+      while(i.hasNext())
+      {
+        DebrisRecord dr = (DebrisRecord) i.next();
+        if(dr.getId().equals(id))
+        {
+          return dr.getImage();
+        }
+      }
+      return null;
     }
 }

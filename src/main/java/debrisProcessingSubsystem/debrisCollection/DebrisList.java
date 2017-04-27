@@ -1,5 +1,7 @@
 package debrisProcessingSubsystem.debrisCollection;
 
+import java.awt.image.BufferedImage;
+
 /**
  * This is the interface for the debris list objects under the DebrisCollection
  * object in the SADD.
@@ -31,4 +33,6 @@ public interface DebrisList {
      * @return True if empty.
      */
     public boolean isEmpty();
+
+    public BufferedImage getDebrisById(String id);
 }

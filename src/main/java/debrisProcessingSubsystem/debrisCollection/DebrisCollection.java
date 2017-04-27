@@ -6,7 +6,9 @@ import debrisProcessingSubsystem.updateSystem.Updatable;
 import debrisProcessingSubsystem.updateSystem.Update;
 import debrisProcessingSubsystem.updateSystem.*;
 
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -252,5 +254,10 @@ public class DebrisCollection implements Updatable, TestableComponent
   @Override
   public void addDebrisRecord(DebrisRecord update){
     //add a debris record to list?
+  }
+
+  public BufferedImage getDebrisById(String id)
+  {
+    return newDebris.getDebrisById(id);
   }
 }
