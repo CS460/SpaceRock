@@ -108,6 +108,13 @@ public class Asteroid
   {
     return image;
   }
+
+  public void setImage(BufferedImage image)
+  {
+    this.image = image;
+    this.fximage = SwingFXUtils.toFXImage(this.image, null);
+  }
+
   public Image getFXImage()
   {
     return fximage;
@@ -135,23 +142,9 @@ public class Asteroid
     try
     {
       this.image = ImageIO.read(Asteroid.class.getResource("asteroids/" + asteroid_image));
-      //System.out.println("asteroids/" + asteroid_image);
-      this.fximage = SwingFXUtils.toFXImage(this.image,null);
     }
     catch (IOException e)
     {
     }
   }
-  public void setImage(BufferedImage image)
-  {
-    this.image = image;
-    this.fximage = SwingFXUtils.toFXImage(this.image,null);
-  }
 }
-
-
-
-
-
-
-

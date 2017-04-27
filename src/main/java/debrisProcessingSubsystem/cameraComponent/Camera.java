@@ -3,11 +3,6 @@ package debrisProcessingSubsystem.cameraComponent;
 import debrisProcessingSubsystem.debrisCollection.DebrisRecord;
 import debrisProcessingSubsystem.schedulerTester.TestableComponent;
 import debrisProcessingSubsystem.updateSystem.*;
-import fpga.memory.EmptyRegisterException;
-import fpga.memory.MemoryMap;
-import fpga.memory.NoSuchRegisterFoundException;
-import fpga.memory.UnavailbleRegisterException;
-import fpga.objectdetection.Debris;
 import javafx.scene.Node;
 import sensor.Asteroid;
 import sensor.Universe.AltUniverseThread;
@@ -18,10 +13,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +24,8 @@ import java.util.List;
  * Created by dsr on 3/4/17.
  */
 
-public class Camera implements Updatable, TestableComponent {
+public class Camera implements Updatable, TestableComponent
+{
 
   LinkedList<Update> outgoing_updates;
   private boolean DEBUG = true;
@@ -44,7 +36,8 @@ public class Camera implements Updatable, TestableComponent {
   private BufferedImage currentImage = null;
   private Asteroid[] currentFrameAsteroids;
 
-  public Camera() {
+  public Camera()
+  {
     universe = new AltUniverseThread(5);
     universe.setDaemon(true);
     universe.start();
@@ -57,11 +50,14 @@ public class Camera implements Updatable, TestableComponent {
   /**
    * Turn on the camera.
    */
-  private void on() {
-    if(DEBUG){
+  private void on()
+  {
+    if (DEBUG)
+    {
       System.out.println("Turn on camera.");
     }
-    if(memoryMap.on()){
+    if (memoryMap.on())
+    {
       cameraStatusModel.setIsOn(true);
     }
     OperatorUpdate outgoingUpdate = new OperatorUpdate(UpdateType.OPERATOR);
@@ -72,11 +68,14 @@ public class Camera implements Updatable, TestableComponent {
   /**
    * Turn the camera off.
    */
-  private void off() {
-    if(DEBUG){
+  private void off()
+  {
+    if (DEBUG)
+    {
       System.out.println("Turn camera off.");
     }
-    if(memoryMap.on()){
+    if (memoryMap.on())
+    {
       cameraStatusModel.setIsOn(false);
     }
     OperatorUpdate outgoingUpdate = new OperatorUpdate(UpdateType.OPERATOR);
@@ -88,8 +87,10 @@ public class Camera implements Updatable, TestableComponent {
    * Reset the camera.
    * TODO this needs to power off, power on, and reset zoom level.
    */
-  private void reset() {
-    if(DEBUG){
+  private void reset()
+  {
+    if (DEBUG)
+    {
       System.out.println("Reset Camera.");
     }
     OperatorUpdate outgoingUpdate = new OperatorUpdate(UpdateType.OPERATOR);
@@ -119,16 +120,20 @@ public class Camera implements Updatable, TestableComponent {
     g.setColor(java.awt.Color.black);
     g.fillRect(0, 0, currentImage.getWidth(), currentImage.getHeight());
 
-    for(Asteroid ast : currentFrameAsteroids)
+    for (Asteroid ast : currentFrameAsteroids)
     {
-      if(ast.current_location[0] > 0 && ast.current_location[1] > 0)
-      g.drawImage(ast.getImage(), ast.current_location[0]/* - ast.current_radius*/, ast.current_location[1]/* - ast.current_radius*/, ast.current_radius, ast.current_radius, null);
+      if (ast.current_location[0] > 0 && ast.current_location[1] > 0)
+      {
+        g.drawImage(ast.getImage(), ast.current_location[0]/* - ast.current_radius*/, ast.current_location[1]/* - ast.current_radius*/, ast.current_radius, ast.current_radius, null);
+      }
     }
 
-    for(Asteroid ast : currentFrameAsteroids)
+    for (Asteroid ast : currentFrameAsteroids)
     {
-      if(ast.current_location[0] > 0 && ast.current_location[1] > 0)
-      ast.setImage(this.getSubregion(ast));
+      if (ast.current_location[0] > 0 && ast.current_location[1] > 0)
+      {
+        ast.setImage(this.getSubregion(ast));
+      }
     }
 
 
@@ -148,11 +153,14 @@ public class Camera implements Updatable, TestableComponent {
   */
 
   // Corey
-  private void setZoomLevel(ZoomLevel zoomLevel) {
-    if(DEBUG){
+  private void setZoomLevel(ZoomLevel zoomLevel)
+  {
+    if (DEBUG)
+    {
       System.out.println("Setting zoom level to: " + zoomLevel);
     }
-    if(memoryMap.setZoomLevel(zoomLevel)){
+    if (memoryMap.setZoomLevel(zoomLevel))
+    {
       cameraStatusModel.setZoomLevel(zoomLevel);
     }
     OperatorUpdate outgoingUpdate = new OperatorUpdate(UpdateType.OPERATOR);
@@ -184,10 +192,13 @@ public class Camera implements Updatable, TestableComponent {
   }*/
 
 
-  public Update updateComponent(Update theUpdate) {
-    CameraUpdate camera_update = (CameraUpdate)theUpdate;
-    camera_update.getParamMap().forEach((param,value) -> {
-      switch(param) {
+  public Update updateComponent(Update theUpdate)
+  {
+    CameraUpdate camera_update = (CameraUpdate) theUpdate;
+    camera_update.getParamMap().forEach((param, value) ->
+    {
+      switch (param)
+      {
         case TURN_ON_CAMERA:
           on();
           if (DEBUG) System.out.println("Received TURN_ON_CAMERA update.");
@@ -205,7 +216,7 @@ public class Camera implements Updatable, TestableComponent {
           if (DEBUG) System.out.println("Received TAKE_PICTURE update.");
           break;
         case SET_ZOOM:
-          setZoomLevel((ZoomLevel)value);
+          setZoomLevel((ZoomLevel) value);
           if (DEBUG) System.out.println("Received SET_ZOOM update.");
           break;
         case PROCESS_IMAGE:
@@ -219,15 +230,20 @@ public class Camera implements Updatable, TestableComponent {
     return null;
   }
 
-  public Update pollComponent() {
+  public Update pollComponent()
+  {
     Update updateFromMemoryMap = memoryMap.checkMap();
     outgoing_updates.addLast(updateFromMemoryMap);
-    if (outgoing_updates.isEmpty()) {
+    if (outgoing_updates.isEmpty())
+    {
       return null;
-    } else {
+    }
+    else
+    {
       return outgoing_updates.removeFirst();
     }
   }
+
   public BufferedImage getCurrentImage()
   {
 
@@ -243,17 +259,21 @@ public class Camera implements Updatable, TestableComponent {
     return currentImage;
   }
 
-  public void addUpdateForScheduler(Update update){
+  public void addUpdateForScheduler(Update update)
+  {
     outgoing_updates.addLast(update);
   }
 
   /**
    * Add a debris record to the memory map.
+   *
    * @param update the DebrisRecord to add
    */
-  public void addDebrisRecord(DebrisRecord update){
+  public void addDebrisRecord(DebrisRecord update)
+  {
     memoryMap.addDebrisToRegister(update);
   }
+
   public List<Node> getAsteroidNodes()
   {
     return universe.getAsteroidNodes();
